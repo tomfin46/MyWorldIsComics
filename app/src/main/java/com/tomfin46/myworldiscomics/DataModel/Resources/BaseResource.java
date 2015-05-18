@@ -10,6 +10,7 @@ public class BaseResource {
     public int count_of_issue_appearances;
     public String deck;
     public String description;
+    public int id;
     public ImageObj image;
     public String name;
 

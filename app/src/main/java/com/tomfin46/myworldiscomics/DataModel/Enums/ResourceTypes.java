@@ -1,5 +1,9 @@
 package com.tomfin46.myworldiscomics.DataModel.Enums;
 
+import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.TeamResource;
+
 /**
  * Created by Tom on 10/03/2015.
  */
@@ -101,6 +105,98 @@ public class ResourceTypes
         }
     }
 
+    public static Class GetResourceClass(ResourcesEnum resourcesEnum) {
+        switch (resourcesEnum)
+        {
+            case Character:
+                return CharacterResource.class;
+            case Characters:
+                break;
+            case Chat:
+                break;
+            case Chats:
+                break;
+            case Concept:
+                break;
+            case Concepts:
+                break;
+            case Episode:
+                break;
+            case Episodes:
+                break;
+            case Issue:
+                break;
+            case Issues:
+                break;
+            case Location:
+                break;
+            case Locations:
+                break;
+            case Movie:
+                break;
+            case Movies:
+                break;
+            case Object:
+                break;
+            case Objects:
+                break;
+            case Origin:
+                break;
+            case Origins:
+                break;
+            case Person:
+                break;
+            case People:
+                break;
+            case Power:
+                break;
+            case Powers:
+                break;
+            case Promo:
+                break;
+            case Promos:
+                break;
+            case Publisher:
+                break;
+            case Publishers:
+                break;
+            case Series:
+                break;
+            case SeriesList:
+                break;
+            case Search:
+                break;
+            case StoryArc:
+                break;
+            case StoryArcs:
+                break;
+            case Team:
+                return TeamResource.class;
+            case Teams:
+                break;
+            case Types:
+                break;
+            case Video:
+                break;
+            case Videos:
+                break;
+            case VideoType:
+                break;
+            case VideoTypes:
+                break;
+            case Volume:
+                break;
+            case Volumes:
+                break;
+            case Error:
+                break;
+            default:
+                return BaseResource.class;
+        }
+
+        return BaseResource.class;
+    }
+
     /*public static ResourcesEnum GetResourcesEnum(Type resourceClassType) {
         return GetResourcesEnum(resourceClassType, false);
     }
@@ -154,7 +250,7 @@ public class ResourceTypes
         }
         else if (resourceClassType == typeof(Team))
         {
-            return isCollection ? Teams : Team;
+            return isCollection ? teams : Team;
         }
         else if (resourceClassType == typeof(Volume))
         {

@@ -25,4 +25,5 @@
     <string name="birthLabel">Date of Birth:</string>
     <string name="issueCountLabel_start">Appears in: \u0020 </string>
     <string name="issueCountLabel_end"> \u0020 issues</string>
+    <string name="title_activity_hub">HubActivity</string>
 </resources>

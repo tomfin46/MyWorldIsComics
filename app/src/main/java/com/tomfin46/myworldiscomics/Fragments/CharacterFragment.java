@@ -2,134 +2,151 @@ package com.tomfin46.myworldiscomics.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.google.gson.Gson;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
+import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
+import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CharacterFragment.OnFragmentInteractionListener} interface
+ * {@link OnCharacterFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link CharacterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CharacterFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String CHAR_ID = "character_id";
+    final static String TAG = "CharacterFragment";
 
-    // TODO: Rename and change types of parameters
-    private int charId;
+    private static final String ARG_RES_ID = "resource_id";
 
-    private OnFragmentInteractionListener mListener;
+    private int mResId;
 
-    public CharacterFragment() {
-        // Required empty public constructor
-    }
+    private OnCharacterFragmentInteractionListener mCallback;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param character_id Parameter 1.
+     * @param resId Parameter 1.
      * @return A new instance of fragment CharacterFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CharacterFragment newInstance(int character_id) {
+    public static CharacterFragment newInstance(int resId) {
         CharacterFragment fragment = new CharacterFragment();
         Bundle args = new Bundle();
-        args.putInt(CHAR_ID, character_id);
+        args.putInt(ARG_RES_ID, resId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public CharacterFragment() {
+        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            charId = getArguments().getInt(CHAR_ID);
+            mResId = getArguments().getInt(ARG_RES_ID);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_character, container, false);
 
-        final View rootView = inflater.inflate(R.layout.fragment_character, container, false);
+        final NetworkImageView img = (NetworkImageView) rootView.findViewById(R.id.img);
+        final TextView name = (TextView) rootView.findViewById(R.id.name);
+        final TextView realName = (TextView) rootView.findViewById(R.id.realName);
+        final TextView aliases = (TextView) rootView.findViewById(R.id.aliases);
+        final TextView birth = (TextView) rootView.findViewById(R.id.birth);
+        final TextView issueCount = (TextView) rootView.findViewById(R.id.issueCount);
+        final TextView deck = (TextView) rootView.findViewById(R.id.deck);
 
-        BackboneService.Get(getActivity(), charId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
+        final Button btnTeams = (Button) rootView.findViewById(R.id.btnTeams);
+
+        final ProgressBar spinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        final ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
+
+        BackboneService.Get(getActivity(), mResId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                initialiseView(rootView, response);
+                spinner.setVisibility(View.GONE);
+                scrollView.setVisibility(View.VISIBLE);
+
+                final Gson gson = new Gson();
+                final CharacterResource character = gson.fromJson(response.toString(), CharacterResource.class);
+
+                ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
+                img.setImageUrl(character.image.super_url, imageLoader);
+                name.setText(character.name);
+                realName.setText(character.RealNameFormattedString);
+                aliases.setText(character.AliasesOneLine);
+                birth.setText(character.BirthFormattedString);
+                issueCount.setText(Integer.toString(character.count_of_issue_appearances));
+                deck.setText(character.deck);
+
+                btnTeams.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mCallback != null) {
+                            mCallback.onResourceListClicked("Teams", character.teams, ResourceTypes.ResourcesEnum.Team);
+                        }
+                    }
+                });
             }
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e(TAG, "Error Fetching Details for " + mResId + ": " + error.getMessage());
             }
         });
 
 
-        // Inflate the layout for this fragment
         return rootView;
-    }
-
-    private void initialiseView(View rootView, JSONObject character) {
-
-        String deck = "";
-        String imgUrl = "";
-        try {
-            deck = character.getString("deck");
-            imgUrl = character.getJSONObject("image").getString("super_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        /*ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
-        NetworkImageView networkImageView = (NetworkImageView) rootView.findViewById(R.id.char_img);
-        networkImageView.setImageUrl(imgUrl, imageLoader);
-
-        TextView textView = (TextView) rootView.findViewById(R.id.char_deck);
-        textView.setText(deck);*/
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mCallback = (OnCharacterFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnCharacterFragmentInteractionListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mCallback = null;
     }
 
     /**
@@ -142,9 +159,9 @@ public class CharacterFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnCharacterFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public <T extends BaseResource> void onResourceListClicked(String listTitle, List<T> resources, ResourceTypes.ResourcesEnum resourcesType);
     }
 
 }

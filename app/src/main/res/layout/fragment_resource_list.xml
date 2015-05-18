@@ -1,0 +1,42 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tomfin46.myworldiscomics.Fragments.ResourceListFragment">
+
+    <LinearLayout
+        android:id="@+id/root_list_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/abc_action_bar_default_height_material"
+            android:elevation="8dp"
+            android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
+            android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:textSize="@dimen/abc_text_size_large_material" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/resources"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center" />
+
+</FrameLayout>

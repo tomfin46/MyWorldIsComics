@@ -17,7 +17,7 @@ public class UrlConstructor {
     }
 
     public static String constructCv(ResourceTypes.ResourcesEnum resourcesEnum, String query, String filter) {
-        return contructCv(resourcesEnum, query, RequestType.RequestTypeEnum.Basic, filter);
+        return contructCv(resourcesEnum, query, RequestType.RequestTypeEnum.Filtered, filter);
     }
 
     public static String contructCv(ResourceTypes.ResourcesEnum resourcesEnum, String query, RequestType.RequestTypeEnum requestType, String filter)

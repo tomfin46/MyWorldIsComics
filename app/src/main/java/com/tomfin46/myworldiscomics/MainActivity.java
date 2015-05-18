@@ -3,6 +3,8 @@ package com.tomfin46.myworldiscomics;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.Gson;
+import com.tomfin46.myworldiscomics.Adapters.RecyclerViewAdapter;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
@@ -80,11 +83,7 @@ public class MainActivity extends ActionBarActivity {
 
         final static String ARG_RES_ID = "resource_id";
         int mResId = -1;
-        //inject a layoutManager
-        /*@Inject
-        RecyclerView.LayoutManager mLayoutManager;
-        RecyclerView mRecyclerView;
-        private DescriptionAdapter mAdapter;*/
+
 
         public PlaceholderFragment() {
         }
@@ -108,16 +107,6 @@ public class MainActivity extends ActionBarActivity {
                     v.setLayoutParams(params);
                 }
             });
-
-            /*mRecyclerView = (RecyclerView) rootView.findViewById(R.id.desc_recycler);
-            mRecyclerView.setHasFixedSize(true);
-
-            String[] arr = {"Test 1", "Test 2", "Test 3", "Test 4"};
-
-            mLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(mLayoutManager);
-            mAdapter = new DescriptionAdapter(arr);
-            mRecyclerView.setAdapter(mAdapter);*/
             return rootView;
         }
 
@@ -146,9 +135,12 @@ public class MainActivity extends ActionBarActivity {
             final TextView deck = (TextView) getActivity().findViewById(R.id.deck);
             final TextView desc = (TextView) getActivity().findViewById(R.id.desc);
 
+            final RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.teams);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+
             final ProgressBar spinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
             final ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
-            //final RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.desc_recycler);
             mResId = resId;
 
             BackboneService.Get(getActivity(), resId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
@@ -170,33 +162,8 @@ public class MainActivity extends ActionBarActivity {
                     issueCount.setText(Integer.toString(character.count_of_issue_appearances));
                     deck.setText(character.deck);
 
-                    /*BackboneService.Post(getActivity(), character.description, new Response.Listener<JSONObject>() {
-
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            //desc.setText(response.toString());
-
-                            JSONArray sections = null;
-                            try {
-                                sections = response.getJSONArray("Sections");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-/*
-                            String[] arr = {"Test 1", "Test 2", "Test 3", "Test 4"};
-
-                            mLayoutManager = new LinearLayoutManager(getActivity());
-                            mRecyclerView.setLayoutManager(mLayoutManager);
-                            mAdapter = new DescriptionAdapter(arr);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, "Error Mapping Description: " + error.getMessage());
-                        }
-                    });*/
-
+                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), character.teams, R.layout.grid_view_item, ResourceTypes.ResourcesEnum.Team);
+                    recyclerView.setAdapter(adapter);
                 }
 
             }, new Response.ErrorListener() {

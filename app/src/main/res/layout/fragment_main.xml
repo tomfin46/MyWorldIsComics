@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -22,42 +23,42 @@
 
                 <com.android.volley.toolbox.NetworkImageView
                     android:id="@+id/img"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header_img_height"
-                    android:elevation="8dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="-5dp"
                     android:layout_marginTop="-5dp"
-                    android:clickable="true"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"/>
+                    android:clickable="true"
+                    android:elevation="8dp"
+                    android:scaleType="centerCrop" />
 
                 <TextView
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/abc_action_bar_default_height_material"
-                    android:id="@+id/name"
-                    android:textSize="@dimen/abc_text_size_large_material"
                     android:background="#F44336"
-                    android:textColor="@color/abc_primary_text_material_dark"
                     android:elevation="8dp"
                     android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
-                    android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material" />
+                    android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textSize="@dimen/abc_text_size_large_material" />
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingTop="@dimen/activity_vertical_margin"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
                     android:visibility="visible">
 
                     <TextView
+                        android:id="@+id/realNameLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/realName"
-                        android:id="@+id/realNameLabel"
                         android:textStyle="bold" />
 
                     <TextView
@@ -66,10 +67,10 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/aliasLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/aliases"
-                        android:id="@+id/aliasLabel"
                         android:textStyle="bold" />
 
                     <TextView
@@ -78,10 +79,10 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/birthLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/birthLabel"
-                        android:id="@+id/birthLabel"
                         android:textStyle="bold" />
 
                     <TextView
@@ -94,10 +95,10 @@
                         android:layout_height="match_parent">
 
                         <TextView
+                            android:id="@+id/issueCountLabel_start"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/issueCountLabel_start"
-                            android:id="@+id/issueCountLabel_start"
                             android:textStyle="bold" />
 
                         <TextView
@@ -106,10 +107,10 @@
                             android:layout_height="wrap_content" />
 
                         <TextView
+                            android:id="@+id/issueCountLabel_end"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/issueCountLabel_end"
-                            android:id="@+id/issueCountLabel_end"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -130,7 +131,26 @@
                         android:layout_height="match_parent"/>-->
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/abc_action_bar_default_height_material"
+                    android:background="#F44336"
+                    android:elevation="8dp"
+                    android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
+                    android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+                    android:text="Teams"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textSize="@dimen/abc_text_size_large_material" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/teams"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 
@@ -139,12 +159,12 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"
+        android:layout_alignParentTop="false"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:layout_gravity="center" />
 
 </RelativeLayout>
