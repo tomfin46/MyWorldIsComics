@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tomfin46.myworldiscomics.MainActivity$PlaceholderFragment">
+    tools:context="com.tomfin46.myworldiscomics.Fragments.CharacterFragment">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -42,7 +43,8 @@
                     android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="@dimen/abc_text_size_large_material" />
+                    android:textSize="@dimen/abc_text_size_large_material"
+                    android:inputType="text" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -123,31 +125,7 @@
                         android:id="@+id/desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-
-                    <!--<android.support.v7.widget.RecyclerView
-                        android:id="@+id/desc_recycler"
-                        android:scrollbars="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>-->
-
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/abc_action_bar_default_height_material"
-                    android:background="#F44336"
-                    android:elevation="8dp"
-                    android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
-                    android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-                    android:text="Teams"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="@dimen/abc_text_size_large_material" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/teams"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
             </LinearLayout>
 
 

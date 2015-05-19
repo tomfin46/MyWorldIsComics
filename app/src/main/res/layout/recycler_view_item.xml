@@ -41,7 +41,6 @@
                 android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material"
                 android:textColor="@color/abc_primary_text_material_dark"
                 android:textSize="@dimen/abc_text_size_large_material"
-                android:singleLine="false"
                 android:inputType="text" />
 
 

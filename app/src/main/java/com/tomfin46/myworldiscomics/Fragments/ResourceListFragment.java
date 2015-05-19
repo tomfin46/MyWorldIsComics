@@ -1,8 +1,8 @@
 package com.tomfin46.myworldiscomics.Fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.tomfin46.myworldiscomics.Adapters.RecyclerViewAdapter;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
@@ -29,29 +28,28 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ResourceListFragment<T extends BaseResource> extends Fragment {
-    private static final String ARG_LIST_TITLE = "list_title";
     private static final String ARG_RESOURCES = "resources";
     private static final String ARG_RESOURCES_TYPE = "resources_type";
 
-    private String mListTitle;
+    private OnResourceListFragmentInteractionListener mCallback;
+
+    private ProgressBar mSpinner;
+    private LinearLayout mRootListLayout;
+    private RecyclerView mRecyclerView;
+
     private List<T> mResources;
     private ResourceTypes.ResourcesEnum mResourcesType;
-
-    private OnResourceListFragmentInteractionListener mCallback;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param listTitle Parameter 1.
-     * @param resources Parameter 2.
      * @return A new instance of fragment ResourceListFragment.
      */
-    public static <T extends BaseResource> ResourceListFragment newInstance(String listTitle, List<T> resources, ResourceTypes.ResourcesEnum resourcesType) {
+    public static <T extends BaseResource> ResourceListFragment newInstance(List<T> resources, ResourceTypes.ResourcesEnum resourcesType) {
         ResourceListFragment fragment = new ResourceListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_LIST_TITLE, listTitle);
-        args.putSerializable(ARG_RESOURCES, (ArrayList<T>)resources);
+        args.putSerializable(ARG_RESOURCES, (ArrayList<T>) resources);
         args.putSerializable(ARG_RESOURCES_TYPE, resourcesType);
         fragment.setArguments(args);
         return fragment;
@@ -65,7 +63,6 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mListTitle = getArguments().getString(ARG_LIST_TITLE);
             mResources = (List<T>) getArguments().getSerializable(ARG_RESOURCES);
             mResourcesType = (ResourceTypes.ResourcesEnum) getArguments().getSerializable(ARG_RESOURCES_TYPE);
         }
@@ -74,21 +71,17 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_resource_list, container, false);
-        final ProgressBar spinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
-        final LinearLayout rootListLayout = (LinearLayout) rootView.findViewById(R.id.root_list_layout);
 
-        final TextView title = (TextView) rootView.findViewById(R.id.title);
-        title.setText(mListTitle);
+        mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+        mRootListLayout = (LinearLayout) rootView.findViewById(R.id.root_list_layout);
 
-        final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.resources);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mResources, R.layout.grid_view_item, ResourceTypes.ResourcesEnum.Team);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.resources);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        spinner.setVisibility(View.GONE);
-        rootListLayout.setVisibility(View.VISIBLE);
+        if (mResources != null) {
+            updateFragment();
+        }
 
         return rootView;
     }
@@ -110,6 +103,14 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
         mCallback = null;
     }
 
+    private void updateFragment() {
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mResources, R.layout.recycler_view_item, mResourcesType);
+        mRecyclerView.setAdapter(adapter);
+
+        mSpinner.setVisibility(View.GONE);
+        mRootListLayout.setVisibility(View.VISIBLE);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -121,7 +122,6 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnResourceListFragmentInteractionListener {
-        public void onTeamClick(int id);
+        public void onTeamClick(int teamId);
     }
-
 }

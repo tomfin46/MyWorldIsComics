@@ -1,24 +1,22 @@
 package com.tomfin46.myworldiscomics.Activities;
 
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
-import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
 import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
 import com.tomfin46.myworldiscomics.Fragments.HubFragment;
 import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
 import com.tomfin46.myworldiscomics.R;
 
-import java.util.List;
-
 public class HubActivity extends ActionBarActivity implements
         HubFragment.OnHubFragmentInteractionListener,
         CharacterFragment.OnCharacterFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener {
+
+    public final static String EXTRA_RES_ID = "com.tomfin46.myworldiscomics.RESID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +35,7 @@ public class HubActivity extends ActionBarActivity implements
             }
 
             HubFragment firstFragment = new HubFragment();
-            getFragmentManager().beginTransaction().add(R.id.fragment, firstFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, firstFragment).commit();
         }
     }
 
@@ -66,24 +64,13 @@ public class HubActivity extends ActionBarActivity implements
 
     @Override
     public void onCharacterClicked(int id) {
-        CharacterFragment characterFragment = CharacterFragment.newInstance(id);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment, characterFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        Intent intent = new Intent(this, CharacterActivity.class);
+        intent.putExtra(EXTRA_RES_ID, id);
+        startActivity(intent);
     }
 
     @Override
-    public <T extends BaseResource> void onResourceListClicked(String listTitle, List<T> resources, ResourceTypes.ResourcesEnum resourcesType) {
-        ResourceListFragment resourceListFragment = ResourceListFragment.newInstance(listTitle, resources, resourcesType);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment, resourceListFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    @Override
-    public void onTeamClick(int id) {
+    public void onTeamClick(int teamId) {
 
     }
 }

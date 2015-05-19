@@ -13,4 +13,20 @@ public class CharacterResource extends BaseResource {
     public CharacterResource() {
         teams = new ArrayList<TeamResource>();
     }
+
+    public String getRealNameFormattedString() {
+        return RealNameFormattedString;
+    }
+
+    public void setRealNameFormattedString(String realNameFormattedString) {
+        RealNameFormattedString = realNameFormattedString;
+    }
+
+    public List<TeamResource> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<TeamResource> teams) {
+        this.teams = teams;
+    }
 }

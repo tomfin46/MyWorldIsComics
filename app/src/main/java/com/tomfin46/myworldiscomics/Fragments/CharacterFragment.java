@@ -1,32 +1,25 @@
 package com.tomfin46.myworldiscomics.Fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.google.gson.Gson;
-import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
-import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
+import com.tomfin46.myworldiscomics.Activities.CharacterActivity;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.R;
-import com.tomfin46.myworldiscomics.Service.BackboneService;
 import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
-
-import org.json.JSONObject;
-
-import java.util.List;
 
 
 /**
@@ -38,26 +31,34 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class CharacterFragment extends Fragment {
-    final static String TAG = "CharacterFragment";
-
-    private static final String ARG_RES_ID = "resource_id";
-
-    private int mResId;
+    private static final String ARG_RES = "resource";
 
     private OnCharacterFragmentInteractionListener mCallback;
+    private CharacterFragmentReceiver mReceiver;
+
+    private CharacterResource mResource;
+
+    private NetworkImageView mNetImageView;
+    private TextView mTxtName;
+    private TextView mTxtRealName;
+    private TextView mTxtAliases;
+    private TextView mTxtBirth;
+    private TextView mTxtIssueCount;
+    private TextView mTxtDeck;
+    private ProgressBar mSpinner;
+    private ScrollView mScrollView;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param resId Parameter 1.
+     * @param resource Parameter 1.
      * @return A new instance of fragment CharacterFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CharacterFragment newInstance(int resId) {
+    public static CharacterFragment newInstance(CharacterResource resource) {
         CharacterFragment fragment = new CharacterFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_RES_ID, resId);
+        args.putSerializable(ARG_RES, resource);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,64 +71,32 @@ public class CharacterFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResId = getArguments().getInt(ARG_RES_ID);
+            mResource = (CharacterResource) getArguments().getSerializable(ARG_RES);
         }
+
+        mReceiver = new CharacterFragmentReceiver();
+        getActivity().registerReceiver(mReceiver, new IntentFilter("fragmentupdater"));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_character, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_character_bio, container, false);
 
-        final NetworkImageView img = (NetworkImageView) rootView.findViewById(R.id.img);
-        final TextView name = (TextView) rootView.findViewById(R.id.name);
-        final TextView realName = (TextView) rootView.findViewById(R.id.realName);
-        final TextView aliases = (TextView) rootView.findViewById(R.id.aliases);
-        final TextView birth = (TextView) rootView.findViewById(R.id.birth);
-        final TextView issueCount = (TextView) rootView.findViewById(R.id.issueCount);
-        final TextView deck = (TextView) rootView.findViewById(R.id.deck);
+        mNetImageView = (NetworkImageView) rootView.findViewById(R.id.img);
+        mTxtName = (TextView) rootView.findViewById(R.id.name);
+        mTxtRealName = (TextView) rootView.findViewById(R.id.realName);
+        mTxtAliases = (TextView) rootView.findViewById(R.id.aliases);
+        mTxtBirth = (TextView) rootView.findViewById(R.id.birth);
+        mTxtIssueCount = (TextView) rootView.findViewById(R.id.issueCount);
+        mTxtDeck = (TextView) rootView.findViewById(R.id.deck);
 
-        final Button btnTeams = (Button) rootView.findViewById(R.id.btnTeams);
+        mSpinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        mScrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
 
-        final ProgressBar spinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        final ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
-
-        BackboneService.Get(getActivity(), mResId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                spinner.setVisibility(View.GONE);
-                scrollView.setVisibility(View.VISIBLE);
-
-                final Gson gson = new Gson();
-                final CharacterResource character = gson.fromJson(response.toString(), CharacterResource.class);
-
-                ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
-                img.setImageUrl(character.image.super_url, imageLoader);
-                name.setText(character.name);
-                realName.setText(character.RealNameFormattedString);
-                aliases.setText(character.AliasesOneLine);
-                birth.setText(character.BirthFormattedString);
-                issueCount.setText(Integer.toString(character.count_of_issue_appearances));
-                deck.setText(character.deck);
-
-                btnTeams.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mCallback != null) {
-                            mCallback.onResourceListClicked("Teams", character.teams, ResourceTypes.ResourcesEnum.Team);
-                        }
-                    }
-                });
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Error Fetching Details for " + mResId + ": " + error.getMessage());
-            }
-        });
-
+        if (mResource != null) {
+            updateFragment();
+        }
 
         return rootView;
     }
@@ -147,6 +116,21 @@ public class CharacterFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallback = null;
+        getActivity().unregisterReceiver(mReceiver);
+    }
+
+    private void updateFragment() {
+        ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
+        mNetImageView.setImageUrl(mResource.image.super_url, imageLoader);
+        mTxtName.setText(mResource.name);
+        mTxtRealName.setText(mResource.RealNameFormattedString);
+        mTxtAliases.setText(mResource.AliasesOneLine);
+        mTxtBirth.setText(mResource.BirthFormattedString);
+        mTxtIssueCount.setText(Integer.toString(mResource.count_of_issue_appearances));
+        mTxtDeck.setText(mResource.deck);
+
+        mSpinner.setVisibility(View.GONE);
+        mScrollView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -160,8 +144,20 @@ public class CharacterFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnCharacterFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public <T extends BaseResource> void onResourceListClicked(String listTitle, List<T> resources, ResourceTypes.ResourcesEnum resourcesType);
+        //public <T extends BaseResource> void onResourceListClicked(String listTitle, List<T> resources, ResourceTypes.ResourcesEnum resourcesType);
+    }
+
+    public class CharacterFragmentReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int fragNo = intent.getIntExtra(CharacterActivity.EXTRA_FRAG_NUM, 0);
+
+            if (fragNo == 0) {
+                mResource = (CharacterResource) intent.getSerializableExtra(CharacterActivity.EXTRA_CHARACTER);
+                updateFragment();
+            }
+        }
     }
 
 }
