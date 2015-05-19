@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="nav_char">
+        <item>@string/sec_res_bio</item>
+        <item>@string/sec_res_desc</item>
+        <item>@string/sec_res_first</item>
+        <item>@string/sec_char_teams</item>
+    </string-array>
+
+    <string-array name="nav_team">
+        <item>@string/sec_res_bio</item>
+        <item>@string/sec_res_desc</item>
+        <item>@string/sec_res_first</item>
+    </string-array>
+</resources>

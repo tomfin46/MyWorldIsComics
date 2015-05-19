@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -17,56 +16,54 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.TeamResource;
 import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OnCharacterFragmentInteractionListener} interface
+ * {@link TeamFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CharacterFragment#newInstance} factory method to
+ * Use the {@link TeamFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CharacterFragment extends Fragment {
+public class TeamFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_RES = "resource";
 
-    private OnCharacterFragmentInteractionListener mCallback;
-    private CharacterFragmentReceiver mReceiver;
+    private OnFragmentInteractionListener mCallback;
+    private TeamFragmentReceiver mReceiver;
 
-    private CharacterResource mResource;
+    private TeamResource mResource;
 
     private NetworkImageView mNetImageView;
     private TextView mTxtName;
-    private TextView mTxtRealName;
     private TextView mTxtAliases;
-    private TextView mTxtBirth;
-    private TextView mTxtIssueCount;
     private TextView mTxtDeck;
     private ProgressBar mSpinner;
     private ScrollView mScrollView;
 
-    private VelocityTracker mVelocityTracker = null;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param resource Parameter 1.
-     * @return A new instance of fragment CharacterFragment.
+     * @return A new instance of fragment TeamFragment.
      */
-    public static CharacterFragment newInstance(CharacterResource resource) {
-        CharacterFragment fragment = new CharacterFragment();
+    // TODO: Rename and change types and number of parameters
+    public static TeamFragment newInstance(TeamResource resource) {
+        TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_RES, resource);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public CharacterFragment() {
+    public TeamFragment() {
         // Required empty public constructor
     }
 
@@ -74,17 +71,18 @@ public class CharacterFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResource = (CharacterResource) getArguments().getSerializable(ARG_RES);
+            mResource = (TeamResource) getArguments().getSerializable(ARG_RES);
         }
 
-        mReceiver = new CharacterFragmentReceiver();
+        mReceiver = new TeamFragmentReceiver();
         getActivity().registerReceiver(mReceiver, new IntentFilter("fragmentupdater"));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_character_bio, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_team_bio, container, false);
 
         mNetImageView = (NetworkImageView) rootView.findViewById(R.id.img);
         mNetImageView.setOnClickListener(new View.OnClickListener() {
@@ -98,16 +96,13 @@ public class CharacterFragment extends Fragment {
                 v.setLayoutParams(params);
             }
         });
-
         mTxtName = (TextView) rootView.findViewById(R.id.name);
-        mTxtRealName = (TextView) rootView.findViewById(R.id.realName);
         mTxtAliases = (TextView) rootView.findViewById(R.id.aliases);
-        mTxtBirth = (TextView) rootView.findViewById(R.id.birth);
-        mTxtIssueCount = (TextView) rootView.findViewById(R.id.issueCount);
         mTxtDeck = (TextView) rootView.findViewById(R.id.deck);
 
         mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         mScrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
+
 
         if (mResource != null) {
             updateFragment();
@@ -120,10 +115,10 @@ public class CharacterFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (OnCharacterFragmentInteractionListener) activity;
+            mCallback = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnCharacterFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -134,14 +129,11 @@ public class CharacterFragment extends Fragment {
         getActivity().unregisterReceiver(mReceiver);
     }
 
-    private void updateFragment() {
+    private void updateFragment(){
         final ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
         mNetImageView.setImageUrl(mResource.image.super_url, imageLoader);
         mTxtName.setText(mResource.name);
-        mTxtRealName.setText(mResource.RealNameFormattedString);
         mTxtAliases.setText(mResource.AliasesOneLine);
-        mTxtBirth.setText(mResource.BirthFormattedString);
-        mTxtIssueCount.setText(Integer.toString(mResource.count_of_issue_appearances));
         mTxtDeck.setText(mResource.deck);
 
         mSpinner.setVisibility(View.GONE);
@@ -158,20 +150,19 @@ public class CharacterFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnCharacterFragmentInteractionListener {
+    public interface OnFragmentInteractionListener {
     }
 
-    public class CharacterFragmentReceiver extends BroadcastReceiver {
+    public class TeamFragmentReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             int fragNo = intent.getIntExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
 
             if (fragNo == 0) {
-                mResource = (CharacterResource) intent.getSerializableExtra(ExtraTags.EXTRA_CHARACTER);
+                mResource = (TeamResource) intent.getSerializableExtra(ExtraTags.EXTRA_TEAM);
                 updateFragment();
             }
         }
     }
-
 }

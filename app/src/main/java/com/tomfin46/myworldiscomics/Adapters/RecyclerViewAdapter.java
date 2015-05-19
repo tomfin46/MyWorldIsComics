@@ -35,20 +35,6 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
     private ResourceTypes.ResourcesEnum mResourcesType;
     private final ImageLoader mImageLoader;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        NetworkImageView mImage;
-        TextView mName;
-        TextView mDeck;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            mImage = (NetworkImageView) itemView.findViewById(R.id.img);
-            mName = (TextView) itemView.findViewById(R.id.name);
-            mDeck = (TextView) itemView.findViewById(R.id.deck);
-        }
-    }
-
     public RecyclerViewAdapter(Context context, final List<T> resources, int layoutResId, ResourceTypes.ResourcesEnum resourcesType) {
         mContext = context;
         mResources = resources;
@@ -100,5 +86,19 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
     public int getItemCount() {
         int size = mResources.size();
         return size;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        NetworkImageView mImage;
+        TextView mName;
+        TextView mDeck;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            mImage = (NetworkImageView) itemView.findViewById(R.id.img);
+            mName = (TextView) itemView.findViewById(R.id.name);
+            mDeck = (TextView) itemView.findViewById(R.id.deck);
+        }
     }
 }

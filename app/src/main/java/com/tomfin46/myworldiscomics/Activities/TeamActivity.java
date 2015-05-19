@@ -17,15 +17,17 @@ import android.widget.ProgressBar;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
-import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
+import com.tomfin46.myworldiscomics.DataModel.Resources.TeamResource;
 import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
 import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
 import com.tomfin46.myworldiscomics.Fragments.PlaceholderFragment;
 import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
+import com.tomfin46.myworldiscomics.Fragments.TeamFragment;
 import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
@@ -34,19 +36,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CharacterActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        CharacterFragment.OnCharacterFragmentInteractionListener,
-        ResourceListFragment.OnResourceListFragmentInteractionListener,
-        FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
-        DescriptionListFragment.OnDescriptionListFragmentInteractionListener {
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
-    final static String TAG = "CharacterActivity";
+public class TeamActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        TeamFragment.OnFragmentInteractionListener,
+        DescriptionListFragment.OnDescriptionListFragmentInteractionListener,
+        FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
+        ResourceListFragment.OnResourceListFragmentInteractionListener {
+
+    final static String TAG = "TeamActivity";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private NavigationDrawerFragment mNavDrawerTeamFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -54,38 +62,40 @@ public class CharacterActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     private int mResId;
-    private CharacterResource mResource;
+    private TeamResource mResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_character);
+        setContentView(R.layout.activity_team);
 
         mResId = getIntent().getIntExtra(ExtraTags.EXTRA_RES_ID, 0);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
+        mNavDrawerTeamFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
+        mNavDrawerTeamFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout),
-                getResources().getStringArray(R.array.nav_char));
+                getResources().getStringArray(R.array.nav_team));
+
 
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
 
         final Context c = this;
         final Gson gson = new Gson();
-        BackboneService.Get(c, mResId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
+        BackboneService.Get(c, mResId, ResourceTypes.ResourcesEnum.Team, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 spinner.setVisibility(View.GONE);
 
-                mResource = gson.fromJson(response.toString(), CharacterResource.class);
+                mResource = gson.fromJson(response.toString(), TeamResource.class);
 
                 Intent bioData = new Intent("fragmentupdater");
-                bioData.putExtra(ExtraTags.EXTRA_CHARACTER, mResource);
+                bioData.putExtra(ExtraTags.EXTRA_TEAM, mResource);
                 bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
                 sendBroadcast(bioData);
 
@@ -104,11 +114,8 @@ public class CharacterActivity extends ActionBarActivity
                 });
 
                 BackboneService.Post(c, mResource.description, new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
-                        //desc.setText(response.toString());
-
                         JSONArray sections = null;
                         try {
                             sections = response.getJSONArray("Sections");
@@ -126,6 +133,42 @@ public class CharacterActivity extends ActionBarActivity
                         Log.e(TAG, "Error Mapping Description: " + error.getMessage());
                     }
                 });
+
+                final Type listType = new TypeToken<ArrayList<CharacterResource>>(){}.getType();
+                String filter = "Characters,Character_Enemies,Character_Friends";
+                BackboneService.Get(c, mResource.id, ResourceTypes.ResourcesEnum.Team, filter, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        TeamResource team = gson.fromJson(response.toString(), TeamResource.class);
+                        mResource.characters = team.characters;
+                        mResource.character_enemies = team.character_enemies;
+                        mResource.characters_friends = team.characters_friends;
+
+                        List<String> labels = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.nav_team)));
+                        if (mResource.characters.size() > 0) {
+                            labels.add(getResources().getString(R.string.sec_team_members));
+                        }
+                        if (mResource.character_enemies.size() > 0) {
+                            labels.add(getResources().getString(R.string.sec_team_enemies));
+                        }
+                        if (mResource.characters_friends.size() > 0) {
+                            labels.add(getResources().getString(R.string.sec_team_allies));
+                        }
+
+                        String[] l = labels.toArray(new String[labels.size()]);
+                        // Set up the drawer.
+                        mNavDrawerTeamFragment.setUp(
+                                R.id.navigation_drawer,
+                                (DrawerLayout) findViewById(R.id.drawer_layout),
+                                l);
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error Fetching Details for " + mResource.first_appeared_in_issue.id + ": " + error.getMessage());
+                    }
+                });
             }
 
         }, new Response.ErrorListener() {
@@ -141,20 +184,20 @@ public class CharacterActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         Fragment fragment = new PlaceholderFragment();
         switch (position) {
             case 0:
                 if (mResource != null) {
-                    fragment = CharacterFragment.newInstance(mResource);
+                    fragment = TeamFragment.newInstance(mResource);
                 } else {
-                    fragment = new CharacterFragment();
+                    fragment = new TeamFragment();
                 }
                 mTitle = "";
                 break;
             case 1:
                 if (mResource != null && mResource.descriptionSections != null) {
                     fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
+                    mTitle = mResource.name;
                 } else {
                     fragment = new DescriptionListFragment();
                 }
@@ -168,8 +211,24 @@ public class CharacterActivity extends ActionBarActivity
                 }
                 break;
             case 3:
-                if (mResource != null && mResource.teams.size() > 0) {
-                    fragment = ResourceListFragment.newInstance(mResource.teams, ResourceTypes.ResourcesEnum.Team);
+                if (mResource != null && mResource.characters.size() > 0) {
+                    fragment = ResourceListFragment.newInstance(mResource.characters, ResourceTypes.ResourcesEnum.Character);
+                    mTitle = mResource.name;
+                } else {
+                    fragment = new ResourceListFragment();
+                }
+                break;
+            case 4:
+                if (mResource != null && mResource.character_enemies.size() > 0) {
+                    fragment = ResourceListFragment.newInstance(mResource.character_enemies, ResourceTypes.ResourcesEnum.Character);
+                    mTitle = mResource.name;
+                } else {
+                    fragment = new ResourceListFragment();
+                }
+                break;
+            case 5:
+                if (mResource != null && mResource.characters_friends.size() > 0) {
+                    fragment = ResourceListFragment.newInstance(mResource.characters_friends, ResourceTypes.ResourcesEnum.Character);
                     mTitle = mResource.name;
                 } else {
                     fragment = new ResourceListFragment();
@@ -193,11 +252,11 @@ public class CharacterActivity extends ActionBarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+        if (!mNavDrawerTeamFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.menu_character, menu);
+            getMenuInflater().inflate(R.menu.team, menu);
             restoreActionBar();
             return true;
         }
@@ -220,14 +279,14 @@ public class CharacterActivity extends ActionBarActivity
     }
 
     @Override
-    public void onResourceClick(int resId) {
-        Intent intent = new Intent(this, TeamActivity.class);
-        intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
-        startActivity(intent);
+    public void onIssueClick(int issueId) {
+
     }
 
     @Override
-    public void onIssueClick(int issueId) {
-
+    public void onResourceClick(int resId) {
+        Intent intent = new Intent(this, CharacterActivity.class);
+        intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
+        startActivity(intent);
     }
 }

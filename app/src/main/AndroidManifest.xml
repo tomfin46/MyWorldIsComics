@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.CharacterActivity"
             android:label="@string/title_activity_main" >
         </activity>
         <activity
-            android:name=".Activities.CharacterActivity"
-            android:label="@string/title_activity_main" >
+            android:name=".Activities.TeamActivity"
+            android:label="@string/title_activity_team" >
         </activity>
     </application>
 

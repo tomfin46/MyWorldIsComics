@@ -9,14 +9,13 @@ import android.view.MenuItem;
 import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
 import com.tomfin46.myworldiscomics.Fragments.HubFragment;
 import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
+import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 
 public class HubActivity extends ActionBarActivity implements
         HubFragment.OnHubFragmentInteractionListener,
         CharacterFragment.OnCharacterFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener {
-
-    public final static String EXTRA_RES_ID = "com.tomfin46.myworldiscomics.RESID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +64,12 @@ public class HubActivity extends ActionBarActivity implements
     @Override
     public void onCharacterClicked(int id) {
         Intent intent = new Intent(this, CharacterActivity.class);
-        intent.putExtra(EXTRA_RES_ID, id);
+        intent.putExtra(ExtraTags.EXTRA_RES_ID, id);
         startActivity(intent);
     }
 
     @Override
-    public void onTeamClick(int teamId) {
+    public void onResourceClick(int resId) {
 
     }
 }

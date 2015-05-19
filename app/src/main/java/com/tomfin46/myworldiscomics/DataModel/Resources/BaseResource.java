@@ -1,17 +1,18 @@
 package com.tomfin46.myworldiscomics.DataModel.Resources;
 
+import org.json.JSONArray;
+
 import java.io.Serializable;
 
 /**
  * Created by Tom on 13/03/2015.
  */
 public class BaseResource implements Serializable {
-
     public String AliasesOneLine;
-    public String BirthFormattedString;
     public int count_of_issue_appearances;
     public String deck;
     public String description;
+    public JSONArray descriptionSections;
     public IssueResource first_appeared_in_issue;
     public int id;
     public ImageObj image;
@@ -27,14 +28,6 @@ public class BaseResource implements Serializable {
 
     public void setAliasesOneLine(String aliasesOneLine) {
         AliasesOneLine = aliasesOneLine;
-    }
-
-    public String getBirthFormattedString() {
-        return BirthFormattedString;
-    }
-
-    public void setBirthFormattedString(String birthFormattedString) {
-        BirthFormattedString = birthFormattedString;
     }
 
     public int getCount_of_issue_appearances() {
@@ -59,6 +52,14 @@ public class BaseResource implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public JSONArray getDescriptionSections() {
+        return descriptionSections;
+    }
+
+    public void setDescriptionSections(JSONArray descriptionSections) {
+        this.descriptionSections = descriptionSections;
     }
 
     public IssueResource getFirst_appeared_in_issue() {

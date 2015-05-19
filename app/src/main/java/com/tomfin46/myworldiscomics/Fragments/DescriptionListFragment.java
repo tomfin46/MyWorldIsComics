@@ -11,52 +11,49 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tomfin46.myworldiscomics.Adapters.RecyclerViewAdapter;
-import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
-import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
-import com.tomfin46.myworldiscomics.Helpers.RecyclerItemClickListener;
+import com.tomfin46.myworldiscomics.Adapters.DescriptionListAdapter;
 import com.tomfin46.myworldiscomics.R;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OnResourceListFragmentInteractionListener} interface
+ * {@link OnDescriptionListFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ResourceListFragment#newInstance} factory method to
+ * Use the {@link DescriptionListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResourceListFragment<T extends BaseResource> extends Fragment {
-    private static final String ARG_RESOURCES = "resources";
-    private static final String ARG_RESOURCES_TYPE = "resources_type";
+public class DescriptionListFragment extends Fragment {
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_SECTIONS = "sections";
 
-    private OnResourceListFragmentInteractionListener mCallback;
+    private JSONArray mSections;
+
+    private OnDescriptionListFragmentInteractionListener mCallback;
 
     private ProgressBar mSpinner;
     private LinearLayout mRootListLayout;
     private RecyclerView mRecyclerView;
 
-    private List<T> mResources;
-    private ResourceTypes.ResourcesEnum mResourcesType;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment ResourceListFragment.
+     * @param sections Parameter 1.
+     * @return A new instance of fragment DescriptionListFragment.
      */
-    public static <T extends BaseResource> ResourceListFragment newInstance(List<T> resources, ResourceTypes.ResourcesEnum resourcesType) {
-        ResourceListFragment fragment = new ResourceListFragment();
+    // TODO: Rename and change types and number of parameters
+    public static DescriptionListFragment newInstance(JSONArray sections) {
+        DescriptionListFragment fragment = new DescriptionListFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RESOURCES, (ArrayList<T>) resources);
-        args.putSerializable(ARG_RESOURCES_TYPE, resourcesType);
+        args.putString(ARG_SECTIONS, sections.toString());
         fragment.setArguments(args);
         return fragment;
     }
 
-    public ResourceListFragment() {
+    public DescriptionListFragment() {
         // Required empty public constructor
     }
 
@@ -64,29 +61,26 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResources = (List<T>) getArguments().getSerializable(ARG_RESOURCES);
-            mResourcesType = (ResourceTypes.ResourcesEnum) getArguments().getSerializable(ARG_RESOURCES_TYPE);
+            try {
+                mSections = new JSONArray(getArguments().getString(ARG_SECTIONS));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_resource_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_description_list, container, false);
 
         mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         mRootListLayout = (LinearLayout) rootView.findViewById(R.id.root_list_layout);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.resources);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.sections);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                mCallback.onResourceClick(mResources.get(position).id);
-            }
-        }));
 
-        if (mResources != null) {
+        if (mSections != null) {
             updateFragment();
         }
 
@@ -97,10 +91,10 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (OnResourceListFragmentInteractionListener) activity;
+            mCallback = (OnDescriptionListFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnResourceListFragmentInteractionListener");
+                    + " must implement OnDescriptionListFragmentInteractionListener");
         }
     }
 
@@ -111,7 +105,7 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     }
 
     private void updateFragment() {
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mResources, R.layout.recycler_view_item, mResourcesType);
+        DescriptionListAdapter adapter = new DescriptionListAdapter(getActivity(), mSections, R.layout.description_item);
         mRecyclerView.setAdapter(adapter);
 
         mSpinner.setVisibility(View.GONE);
@@ -128,7 +122,7 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnResourceListFragmentInteractionListener {
-        public void onResourceClick(int resId);
+    public interface OnDescriptionListFragmentInteractionListener {
     }
+
 }

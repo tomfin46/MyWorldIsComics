@@ -3,6 +3,7 @@ package com.tomfin46.myworldiscomics.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +106,7 @@ public class FirstAppearanceFragment extends Fragment {
         ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
         mNetImageView.setImageUrl(mIssue.image.super_url, imageLoader);
         mTxtName.setText(mIssue.name);
-        mTxtDesc.setText(mIssue.description);
+        mTxtDesc.setText(Html.fromHtml(mIssue.description));
 
         mSpinner.setVisibility(View.GONE);
         mScrollView.setVisibility(View.VISIBLE);

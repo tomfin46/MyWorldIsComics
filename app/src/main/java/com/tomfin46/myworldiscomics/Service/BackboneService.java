@@ -10,6 +10,8 @@ import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
+
 /**
  * Created by Tom on 11/03/2015.
  */
@@ -22,11 +24,16 @@ public class BackboneService {
         JSONObject postParameter = null;
         MakeRequest(ctx, Request.Method.GET, url, postParameter, listener, errorListener);
     }
+    public static void Get(Context ctx, int id, ResourceTypes.ResourcesEnum resourceType, String filter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String url = UrlConstructor.constructCv(resourceType, Integer.toString(id), filter);
+        JSONObject postParameter = null;
+        MakeRequest(ctx, Request.Method.GET, url, postParameter, listener, errorListener);
+    }
 
-    /*public static void Post(Context ctx, String description, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public static void Post(Context ctx, String description, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = UrlConstructor.ConstructDesc(description);
         MakeRequest(ctx, Request.Method.POST, url, description, listener, errorListener);
-    }*/
+    }
 
     public static void Post(Context ctx, String url, JSONObject postParameter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         MakeRequest(ctx, Request.Method.POST, url, postParameter, listener, errorListener);
@@ -37,7 +44,7 @@ public class BackboneService {
         AddRequestToQueue(ctx, jsonObjectRequest);
     }
 
-    /*private static void MakeRequest(Context ctx, int requestMethodType, String url, final String requestBody, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    private static void MakeRequest(Context ctx, int requestMethodType, String url, final String requestBody, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethodType, url, null, listener, errorListener) {
 
             @Override
@@ -51,7 +58,7 @@ public class BackboneService {
             }
         };
         AddRequestToQueue(ctx, jsonObjectRequest);
-    }*/
+    }
 
     private static void AddRequestToQueue(Context ctx, JsonRequest request) {
         RequestQueueSingleton.getInstance(ctx).addToRequestQueue(request);
