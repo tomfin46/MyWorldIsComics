@@ -24,7 +24,7 @@ import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TeamFragment.OnFragmentInteractionListener} interface
+ * {@link OnTeamFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link TeamFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -34,7 +34,7 @@ public class TeamFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_RES = "resource";
 
-    private OnFragmentInteractionListener mCallback;
+    private OnTeamFragmentInteractionListener mCallback;
     private TeamFragmentReceiver mReceiver;
 
     private TeamResource mResource;
@@ -115,10 +115,10 @@ public class TeamFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (OnFragmentInteractionListener) activity;
+            mCallback = (OnTeamFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnTeamFragmentInteractionListener");
         }
     }
 
@@ -150,7 +150,7 @@ public class TeamFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnTeamFragmentInteractionListener {
     }
 
     public class TeamFragmentReceiver extends BroadcastReceiver {
@@ -159,7 +159,7 @@ public class TeamFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             int fragNo = intent.getIntExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
 
-            if (fragNo == 0) {
+            if (fragNo == 1) {
                 mResource = (TeamResource) intent.getSerializableExtra(ExtraTags.EXTRA_TEAM);
                 updateFragment();
             }

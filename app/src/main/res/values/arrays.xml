@@ -13,4 +13,20 @@
         <item>@string/sec_res_desc</item>
         <item>@string/sec_res_first</item>
     </string-array>
+
+    <string-array name="nav_issue">
+        <item>@string/sec_res_bio</item>
+    </string-array>
+
+    <string-array name="nav_generic">
+        <item>@string/sec_res_bio</item>
+        <item>@string/sec_res_desc</item>
+        <item>@string/sec_res_first</item>
+    </string-array>
+
+
+    <string-array name="nav_volume">
+        <item>@string/sec_res_bio</item>
+        <item>@string/sec_vol_issues</item>
+    </string-array>
 </resources>

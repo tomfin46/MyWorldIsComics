@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,13 @@ public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionList
 
             holder.mTitle.setText(title);
             View view = mViewMap.get(title);
-            if (view.getParent() == null) {
-                holder.mContent.addView(view);
+            int visibility = holder.mContent.getVisibility();
+            holder.mContent.removeAllViewsInLayout();
+            if (view.getParent() != null) {
+                ((ViewGroup) view.getParent()).removeView(view);
             }
+            holder.mContent.addView(view);
+            holder.mContent.setVisibility(visibility);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -128,7 +133,7 @@ public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionList
             } else if (type.contains("FigureDTO")) {
                 layout.addView(createFigure(obj));
             } else if (type.contains("ListDTO")) {
-
+                layout.addView(createList(obj));
             } else if (type.contains("QuoteDTO")) {
                 layout.addView(createQuote(obj));
             } else if (type.contains("SectionDTO")) {
@@ -187,6 +192,21 @@ public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionList
             txtCaption.setTypeface(null, Typeface.ITALIC);
             txtCaption.setText(caption);
             layout.addView(txtCaption);
+        }
+
+        return layout;
+    }
+
+    private View createList(JSONObject list) throws JSONException {
+        LinearLayout layout = new LinearLayout(mContext);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        JSONArray queue = list.getJSONArray("ContentQueue");
+        for (int a = 0; a < queue.length(); ++a) {
+            JSONObject obj = (JSONObject) queue.get(a);
+            TextView bullet = new TextView(mContext);
+            bullet.setText(Html.fromHtml("&#8226;&#32;" + obj.getString("Text")));
+            layout.addView(bullet);
         }
 
         return layout;

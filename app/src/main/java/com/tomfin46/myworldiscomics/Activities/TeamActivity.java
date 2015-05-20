@@ -44,7 +44,7 @@ import java.util.List;
 
 public class TeamActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        TeamFragment.OnFragmentInteractionListener,
+        TeamFragment.OnTeamFragmentInteractionListener,
         DescriptionListFragment.OnDescriptionListFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener {
@@ -96,7 +96,7 @@ public class TeamActivity extends ActionBarActivity
 
                 Intent bioData = new Intent("fragmentupdater");
                 bioData.putExtra(ExtraTags.EXTRA_TEAM, mResource);
-                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
+                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 1);
                 sendBroadcast(bioData);
 
                 mTitle = mResource.name;
@@ -256,7 +256,7 @@ public class TeamActivity extends ActionBarActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.team, menu);
+            getMenuInflater().inflate(R.menu.resource, menu);
             restoreActionBar();
             return true;
         }
@@ -280,11 +280,13 @@ public class TeamActivity extends ActionBarActivity
 
     @Override
     public void onIssueClick(int issueId) {
-
+        Intent intent = new Intent(this, IssueActivity.class);
+        intent.putExtra(ExtraTags.EXTRA_RES_ID, issueId);
+        startActivity(intent);
     }
 
     @Override
-    public void onResourceClick(int resId) {
+    public void onResourceClick(int resId, ResourceTypes.ResourcesEnum resourceType) {
         Intent intent = new Intent(this, CharacterActivity.class);
         intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
         startActivity(intent);

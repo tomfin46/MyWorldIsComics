@@ -2,6 +2,7 @@ package com.tomfin46.myworldiscomics.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.Gson;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
 import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
@@ -78,8 +80,15 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
         if (resource.image != null) {
             holder.mImage.setImageUrl(resource.image.super_url, mImageLoader);
         }
-        holder.mName.setText(resource.name);
-        holder.mDeck.setText(resource.deck);
+        if (ResourceTypes.GetResourceClass(mResourcesType).equals(IssueResource.class)) {
+            holder.mName.setText(((IssueResource)resource).IssueNumberFormattedString + ": " + ((IssueResource) resource).name);
+            if (((IssueResource) resource).description != null) {
+                holder.mDeck.setText(Html.fromHtml(((IssueResource) resource).description));
+            }
+        } else {
+            holder.mName.setText(resource.name);
+            holder.mDeck.setText(resource.deck);
+        }
     }
 
     @Override

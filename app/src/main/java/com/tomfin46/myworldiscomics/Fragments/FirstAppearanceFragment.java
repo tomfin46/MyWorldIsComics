@@ -30,13 +30,14 @@ public class FirstAppearanceFragment extends Fragment {
 
     private IssueResource mIssue;
 
-    private OnFirstAppearanceFragmentInteractionListener mListener;
+    private OnFirstAppearanceFragmentInteractionListener mCallback;
 
     private NetworkImageView mNetImageView;
+    private TextView mTxtVolumeName;
+    private TextView mTxtIssueNum;
+    private TextView mTxtDesc;
     private ProgressBar mSpinner;
     private ScrollView mScrollView;
-    private TextView mTxtDesc;
-    private TextView mTxtName;
 
     /**
      * Use this factory method to create a new instance of
@@ -72,7 +73,15 @@ public class FirstAppearanceFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_first_appearance, container, false);
 
         mNetImageView = (NetworkImageView) rootView.findViewById(R.id.img);
-        mTxtName = (TextView) rootView.findViewById(R.id.name);
+        mNetImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onIssueClick(mIssue.id);
+            }
+        });
+
+        mTxtVolumeName = (TextView) rootView.findViewById(R.id.volumeName);
+        mTxtIssueNum = (TextView) rootView.findViewById(R.id.issueNum);
         mTxtDesc = (TextView) rootView.findViewById(R.id.desc);
 
         mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
@@ -89,7 +98,7 @@ public class FirstAppearanceFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFirstAppearanceFragmentInteractionListener) activity;
+            mCallback = (OnFirstAppearanceFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFirstAppearanceFragmentInteractionListener");
@@ -99,13 +108,14 @@ public class FirstAppearanceFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mCallback = null;
     }
 
     private void updateFragment() {
         ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
         mNetImageView.setImageUrl(mIssue.image.super_url, imageLoader);
-        mTxtName.setText(mIssue.name);
+        mTxtVolumeName.setText(mIssue.volume.name);
+        mTxtIssueNum.setText(mIssue.IssueNumberFormattedString);
         mTxtDesc.setText(Html.fromHtml(mIssue.description));
 
         mSpinner.setVisibility(View.GONE);

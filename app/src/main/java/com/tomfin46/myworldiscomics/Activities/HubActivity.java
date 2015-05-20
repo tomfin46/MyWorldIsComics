@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
 import com.tomfin46.myworldiscomics.Fragments.HubFragment;
 import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
@@ -69,7 +70,7 @@ public class HubActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onResourceClick(int resId) {
+    public void onResourceClick(int resId, ResourceTypes.ResourcesEnum resourceType) {
 
     }
 }

@@ -1,9 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frag_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tomfin46.myworldiscomics.Fragments.CharacterFragment">
+    tools:context="com.tomfin46.myworldiscomics.Fragments.GenericResourceFragment">
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -55,42 +54,6 @@
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:visibility="visible">
-
-                    <TextView
-                        android:id="@+id/realNameLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/realName"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/realName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/aliasLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/aliases"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/aliases"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/birthLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/birthLabel"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/birth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

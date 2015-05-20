@@ -16,33 +16,24 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
 import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnCharacterFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CharacterFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A placeholder fragment containing a simple view.
  */
-public class CharacterFragment extends Fragment {
+public class GenericResourceFragment <T extends BaseResource> extends Fragment {
     private static final String ARG_RES = "resource";
 
-    private OnCharacterFragmentInteractionListener mCallback;
+    private OnGenericResourceFragmentInteractionListener mCallback;
     private CharacterFragmentReceiver mReceiver;
 
-    private CharacterResource mResource;
+    private T mResource;
 
     private NetworkImageView mNetImageView;
     private TextView mTxtName;
-    private TextView mTxtRealName;
-    private TextView mTxtAliases;
-    private TextView mTxtBirth;
     private TextView mTxtIssueCount;
     private TextView mTxtDeck;
     private ProgressBar mSpinner;
@@ -55,15 +46,15 @@ public class CharacterFragment extends Fragment {
      * @param resource Parameter 1.
      * @return A new instance of fragment CharacterFragment.
      */
-    public static CharacterFragment newInstance(CharacterResource resource) {
-        CharacterFragment fragment = new CharacterFragment();
+    public static <T extends BaseResource> GenericResourceFragment newInstance(T resource) {
+        GenericResourceFragment fragment = new GenericResourceFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_RES, resource);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public CharacterFragment() {
+    public GenericResourceFragment() {
         // Required empty public constructor
     }
 
@@ -71,7 +62,7 @@ public class CharacterFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResource = (CharacterResource) getArguments().getSerializable(ARG_RES);
+            mResource = (T) getArguments().getSerializable(ARG_RES);
         }
 
         mReceiver = new CharacterFragmentReceiver();
@@ -81,7 +72,7 @@ public class CharacterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_character_bio, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_resource_bio, container, false);
 
         mNetImageView = (NetworkImageView) rootView.findViewById(R.id.img);
         mNetImageView.setOnClickListener(new View.OnClickListener() {
@@ -97,9 +88,6 @@ public class CharacterFragment extends Fragment {
         });
 
         mTxtName = (TextView) rootView.findViewById(R.id.name);
-        mTxtRealName = (TextView) rootView.findViewById(R.id.realName);
-        mTxtAliases = (TextView) rootView.findViewById(R.id.aliases);
-        mTxtBirth = (TextView) rootView.findViewById(R.id.birth);
         mTxtIssueCount = (TextView) rootView.findViewById(R.id.issueCount);
         mTxtDeck = (TextView) rootView.findViewById(R.id.deck);
 
@@ -117,10 +105,10 @@ public class CharacterFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (OnCharacterFragmentInteractionListener) activity;
+            mCallback = (OnGenericResourceFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnCharacterFragmentInteractionListener");
+                    + " must implement OnGenericResourceFragmentInteractionListener");
         }
     }
 
@@ -135,9 +123,6 @@ public class CharacterFragment extends Fragment {
         final ImageLoader imageLoader = RequestQueueSingleton.getInstance(getActivity()).getImageLoader();
         mNetImageView.setImageUrl(mResource.image.super_url, imageLoader);
         mTxtName.setText(mResource.name);
-        mTxtRealName.setText(mResource.RealNameFormattedString);
-        mTxtAliases.setText(mResource.AliasesOneLine);
-        mTxtBirth.setText(mResource.BirthFormattedString);
         mTxtIssueCount.setText(Integer.toString(mResource.count_of_issue_appearances));
         mTxtDeck.setText(mResource.deck);
 
@@ -155,7 +140,7 @@ public class CharacterFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnCharacterFragmentInteractionListener {
+    public interface OnGenericResourceFragmentInteractionListener {
     }
 
     public class CharacterFragmentReceiver extends BroadcastReceiver {
@@ -164,8 +149,8 @@ public class CharacterFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             int fragNo = intent.getIntExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
 
-            if (fragNo == 0) {
-                mResource = (CharacterResource) intent.getSerializableExtra(ExtraTags.EXTRA_CHARACTER);
+            if (fragNo == 5) {
+                mResource = (T) intent.getSerializableExtra(ExtraTags.EXTRA_RES);
                 updateFragment();
             }
         }

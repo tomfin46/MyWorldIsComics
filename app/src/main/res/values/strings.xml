@@ -11,30 +11,48 @@
     <string name="sec_team_enemies">Enemies</string>
     <string name="sec_team_allies">Allies</string>
 
+    <string name="sec_issue_creators">Creators</string>
+    <string name="sec_issue_characters">Characters</string>
+    <string name="sec_issue_teams">Teams</string>
+    <string name="sec_issue_locations">Locations</string>
+    <string name="sec_issue_concepts">Concepts</string>
+    <string name="sec_issue_objects">Objects</string>
+    <string name="sec_issue_story_arcs">Story Arcs</string>
+
+    <string name="sec_vol_issues">Issues</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- Menu Items -->
     <string name="action_example">Example action</string>
+    <string name="menu_volume">Volume</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_character">CharacterActivity</string>
     <string name="hello_world">Hello world!</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_resource">ResourceActivity</string>
-    <string name="title_activity_main">MainActivity</string>
     
     <!-- Labels -->
     <string name="realName">Real Name:</string>
     <string name="aliases">Aliases:</string>
     <string name="birthLabel">Date of Birth:</string>
     <string name="issueCountLabel_start">Appears in: \u0020 </string>
-    <string name="issueCountLabel_end"> \u0020 issues</string>
-    <string name="title_activity_hub">HubActivity</string>
-    <string name="title_activity_team">TeamActivity</string>
+    <string name="issuesLabel_end"> \u0020 issues</string>
+    <string name="coverDate">Cover Date:</string>
+    <string name="storeDate">Store Date:</string>
+    <string name="title">Title:</string>
+    <string name="space"> \u0020 </string>
+    <string name="volumeTotal">Volume contains:  \u0020 </string>
+    <string name="startYear">Start Year:</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+
+    <!-- Activities -->
+    <string name="title_activity_hub">HubActivity</string>
+    <string name="title_activity_main">CharacterActivity</string>
+    <string name="title_activity_team">TeamActivity</string>
+    <string name="title_activity_issue">IssueActivity</string>
+    <string name="title_activity_generic_resource">GenericResourceActivity</string>
+    <string name="title_activity_volume">VolumeActivity</string>
 </resources>

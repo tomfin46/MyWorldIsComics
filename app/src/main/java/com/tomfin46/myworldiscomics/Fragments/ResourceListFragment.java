@@ -82,7 +82,7 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                mCallback.onResourceClick(mResources.get(position).id);
+                mCallback.onResourceClick(mResources.get(position).id, mResourcesType);
             }
         }));
 
@@ -129,6 +129,6 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnResourceListFragmentInteractionListener {
-        public void onResourceClick(int resId);
+        public void onResourceClick(int resId, ResourceTypes.ResourcesEnum resourceType);
     }
 }

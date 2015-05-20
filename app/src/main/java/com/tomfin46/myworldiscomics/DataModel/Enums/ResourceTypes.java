@@ -1,8 +1,20 @@
 package com.tomfin46.myworldiscomics.DataModel.Enums;
 
+import com.tomfin46.myworldiscomics.Activities.CharacterActivity;
+import com.tomfin46.myworldiscomics.Activities.GenericResourceActivity;
+import com.tomfin46.myworldiscomics.Activities.IssueActivity;
+import com.tomfin46.myworldiscomics.Activities.TeamActivity;
 import com.tomfin46.myworldiscomics.DataModel.Resources.BaseResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.ConceptResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.LocationResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.ObjectResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.PersonResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.PublisherResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.StoryArcResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.TeamResource;
+import com.tomfin46.myworldiscomics.DataModel.Resources.VolumeResource;
 
 /**
  * Created by Tom on 10/03/2015.
@@ -117,7 +129,7 @@ public class ResourceTypes
             case Chats:
                 break;
             case Concept:
-                break;
+                return ConceptResource.class;
             case Concepts:
                 break;
             case Episode:
@@ -125,11 +137,11 @@ public class ResourceTypes
             case Episodes:
                 break;
             case Issue:
-                break;
+                return IssueResource.class;
             case Issues:
                 break;
             case Location:
-                break;
+                return LocationResource.class;
             case Locations:
                 break;
             case Movie:
@@ -137,7 +149,7 @@ public class ResourceTypes
             case Movies:
                 break;
             case Object:
-                break;
+                return ObjectResource.class;
             case Objects:
                 break;
             case Origin:
@@ -145,7 +157,7 @@ public class ResourceTypes
             case Origins:
                 break;
             case Person:
-                break;
+                return PersonResource.class;
             case People:
                 break;
             case Power:
@@ -157,7 +169,7 @@ public class ResourceTypes
             case Promos:
                 break;
             case Publisher:
-                break;
+                return PublisherResource.class;
             case Publishers:
                 break;
             case Series:
@@ -167,7 +179,7 @@ public class ResourceTypes
             case Search:
                 break;
             case StoryArc:
-                break;
+                return StoryArcResource.class;
             case StoryArcs:
                 break;
             case Team:
@@ -185,7 +197,7 @@ public class ResourceTypes
             case VideoTypes:
                 break;
             case Volume:
-                break;
+                return VolumeResource.class;
             case Volumes:
                 break;
             case Error:
@@ -197,68 +209,16 @@ public class ResourceTypes
         return BaseResource.class;
     }
 
-    /*public static ResourcesEnum GetResourcesEnum(Type resourceClassType) {
-        return GetResourcesEnum(resourceClassType, false);
+    public static Class GetResourceActivityClass(ResourcesEnum resourcesEnum) {
+        switch (resourcesEnum) {
+            case Character:
+                return CharacterActivity.class;
+            case Issue:
+                return IssueActivity.class;
+            case Team:
+                return TeamActivity.class;
+            default:
+                return GenericResourceActivity.class;
+        }
     }
-
-    public static ResourcesEnum GetResourcesEnum(Type resourceClassType, boolean isCollection)
-
-    {
-        if (resourceClassType instanceof Character)
-        {
-            return isCollection ? Characters : Character;
-        }
-        else if (resourceClassType == typeof(Concept))
-        {
-            return isCollection ? Concepts : Concept;
-        }
-        else if (resourceClassType == typeof(Issue))
-        {
-            return isCollection ? Issues : Issue;
-        }
-        else if (resourceClassType == typeof(Location))
-        {
-            return isCollection ? Locations : Location;
-        }
-        else if (resourceClassType == typeof(Movie))
-        {
-            return isCollection ? Movies : Movie;
-        }
-        else if (resourceClassType == typeof(ObjectResource))
-        {
-            return isCollection ? Objects : Object;
-        }
-        else if (resourceClassType == typeof(Origin))
-        {
-            return isCollection ? Origins : Origin;
-        }
-        else if (resourceClassType == typeof(Person))
-        {
-            return isCollection ? People : Person;
-        }
-        else if (resourceClassType == typeof(Power))
-        {
-            return isCollection ? Powers : Power;
-        }
-        else if (resourceClassType == typeof(Publisher))
-        {
-            return isCollection ? Publishers : Publisher;
-        }
-        else if (resourceClassType == typeof(StoryArc))
-        {
-            return isCollection ? StoryArcs : StoryArc;
-        }
-        else if (resourceClassType == typeof(Team))
-        {
-            return isCollection ? teams : Team;
-        }
-        else if (resourceClassType == typeof(Volume))
-        {
-            return isCollection ? Volumes : Volume;
-        }
-        else
-        {
-            return Error;
-        }
-    }*/
 }

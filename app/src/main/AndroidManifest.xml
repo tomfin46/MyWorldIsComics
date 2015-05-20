@@ -26,6 +26,18 @@
             android:name=".Activities.TeamActivity"
             android:label="@string/title_activity_team" >
         </activity>
+        <activity
+            android:name=".Activities.IssueActivity"
+            android:label="@string/title_activity_issue" >
+        </activity>
+        <activity
+            android:name=".Activities.GenericResourceActivity"
+            android:label="@string/title_activity_generic_resource" >
+        </activity>
+        <activity
+            android:name=".Activities.VolumeActivity"
+            android:label="@string/title_activity_volume" >
+        </activity>
     </application>
 
 </manifest>

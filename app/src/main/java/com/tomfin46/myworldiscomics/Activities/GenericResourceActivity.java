@@ -20,12 +20,11 @@ import com.google.gson.Gson;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
-import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
 import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
 import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
+import com.tomfin46.myworldiscomics.Fragments.GenericResourceFragment;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
 import com.tomfin46.myworldiscomics.Fragments.PlaceholderFragment;
-import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
 import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
@@ -34,14 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CharacterActivity extends ActionBarActivity
+public class GenericResourceActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        CharacterFragment.OnCharacterFragmentInteractionListener,
-        ResourceListFragment.OnResourceListFragmentInteractionListener,
+        GenericResourceFragment.OnGenericResourceFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
         DescriptionListFragment.OnDescriptionListFragmentInteractionListener {
 
-    final static String TAG = "CharacterActivity";
+    final static String TAG = "GenericResourceActivity";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -55,13 +53,15 @@ public class CharacterActivity extends ActionBarActivity
 
     private int mResId;
     private CharacterResource mResource;
+    private ResourceTypes.ResourcesEnum mResourceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_character);
+        setContentView(R.layout.activity_generic_resource);
 
         mResId = getIntent().getIntExtra(ExtraTags.EXTRA_RES_ID, 0);
+        mResourceType = (ResourceTypes.ResourcesEnum) getIntent().getSerializableExtra(ExtraTags.EXTRA_RES_TYPE);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -70,13 +70,13 @@ public class CharacterActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout),
-                getResources().getStringArray(R.array.nav_char));
+                getResources().getStringArray(R.array.nav_generic));
 
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
 
         final Context c = this;
         final Gson gson = new Gson();
-        BackboneService.Get(c, mResId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
+        BackboneService.Get(c, mResId, mResourceType, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -85,8 +85,8 @@ public class CharacterActivity extends ActionBarActivity
                 mResource = gson.fromJson(response.toString(), CharacterResource.class);
 
                 Intent bioData = new Intent("fragmentupdater");
-                bioData.putExtra(ExtraTags.EXTRA_CHARACTER, mResource);
-                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
+                bioData.putExtra(ExtraTags.EXTRA_RES, mResource);
+                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 5);
                 sendBroadcast(bioData);
 
                 mTitle = mResource.name;
@@ -103,29 +103,29 @@ public class CharacterActivity extends ActionBarActivity
                     }
                 });
 
-                BackboneService.Post(c, mResource.description, new Response.Listener<JSONObject>() {
+                if (mResource.description != null) {
+                    BackboneService.Post(c, mResource.description, new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //desc.setText(response.toString());
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            JSONArray sections = null;
+                            try {
+                                sections = response.getJSONArray("Sections");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                        JSONArray sections = null;
-                        try {
-                            sections = response.getJSONArray("Sections");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            if (sections != null) {
+                                mResource.descriptionSections = sections;
+                            }
                         }
-
-                        if (sections != null) {
-                            mResource.descriptionSections = sections;
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Error Mapping Description: " + error.getMessage());
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error Mapping Description: " + error.getMessage());
-                    }
-                });
+                    });
+                }
             }
 
         }, new Response.ErrorListener() {
@@ -141,20 +141,21 @@ public class CharacterActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         Fragment fragment = new PlaceholderFragment();
         switch (position) {
             case 0:
                 if (mResource != null) {
-                    fragment = CharacterFragment.newInstance(mResource);
+                    fragment = GenericResourceFragment.newInstance(mResource);
                 } else {
-                    fragment = new CharacterFragment();
+                    fragment = new GenericResourceFragment();
                 }
                 mTitle = "";
                 break;
             case 1:
                 if (mResource != null && mResource.descriptionSections != null) {
                     fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
+                } else if (mResource.description == null) {
+                    fragment = DescriptionListFragment.newInstance(new JSONArray());
                 } else {
                     fragment = new DescriptionListFragment();
                 }
@@ -165,14 +166,6 @@ public class CharacterActivity extends ActionBarActivity
                     mTitle = mResource.name;
                 } else {
                     fragment = new FirstAppearanceFragment();
-                }
-                break;
-            case 3:
-                if (mResource != null && mResource.teams.size() > 0) {
-                    fragment = ResourceListFragment.newInstance(mResource.teams, ResourceTypes.ResourcesEnum.Team);
-                    mTitle = mResource.name;
-                } else {
-                    fragment = new ResourceListFragment();
                 }
                 break;
         }
@@ -189,6 +182,7 @@ public class CharacterActivity extends ActionBarActivity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,13 +210,6 @@ public class CharacterActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onResourceClick(int resId, ResourceTypes.ResourcesEnum resourceType) {
-        Intent intent = new Intent(this, TeamActivity.class);
-        intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
-        startActivity(intent);
     }
 
     @Override

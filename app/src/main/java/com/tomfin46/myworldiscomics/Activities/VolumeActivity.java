@@ -18,30 +18,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
-import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
-import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
-import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
-import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
-import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
+import com.tomfin46.myworldiscomics.DataModel.Resources.VolumeResource;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
 import com.tomfin46.myworldiscomics.Fragments.PlaceholderFragment;
 import com.tomfin46.myworldiscomics.Fragments.ResourceListFragment;
+import com.tomfin46.myworldiscomics.Fragments.VolumeFragment;
 import com.tomfin46.myworldiscomics.Helpers.ExtraTags;
 import com.tomfin46.myworldiscomics.R;
 import com.tomfin46.myworldiscomics.Service.BackboneService;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CharacterActivity extends ActionBarActivity
+public class VolumeActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        CharacterFragment.OnCharacterFragmentInteractionListener,
-        ResourceListFragment.OnResourceListFragmentInteractionListener,
-        FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
-        DescriptionListFragment.OnDescriptionListFragmentInteractionListener {
+        VolumeFragment.OnVolumeFragmentInteractionListener,
+        ResourceListFragment.OnResourceListFragmentInteractionListener{
 
-    final static String TAG = "CharacterActivity";
+    final static String TAG = "VolumeActivity";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -54,12 +47,12 @@ public class CharacterActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     private int mResId;
-    private CharacterResource mResource;
+    private VolumeResource mResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_character);
+        setContentView(R.layout.activity_volume);
 
         mResId = getIntent().getIntExtra(ExtraTags.EXTRA_RES_ID, 0);
 
@@ -70,62 +63,26 @@ public class CharacterActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout),
-                getResources().getStringArray(R.array.nav_char));
+                getResources().getStringArray(R.array.nav_volume));
 
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
 
         final Context c = this;
         final Gson gson = new Gson();
-        BackboneService.Get(c, mResId, ResourceTypes.ResourcesEnum.Character, new Response.Listener<JSONObject>() {
+        BackboneService.Get(c, mResId, ResourceTypes.ResourcesEnum.Volume, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 spinner.setVisibility(View.GONE);
 
-                mResource = gson.fromJson(response.toString(), CharacterResource.class);
+                mResource = gson.fromJson(response.toString(), VolumeResource.class);
 
                 Intent bioData = new Intent("fragmentupdater");
-                bioData.putExtra(ExtraTags.EXTRA_CHARACTER, mResource);
-                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 0);
+                bioData.putExtra(ExtraTags.EXTRA_VOLUME, mResource);
+                bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 4);
                 sendBroadcast(bioData);
 
                 mTitle = mResource.name;
-
-                BackboneService.Get(c, mResource.first_appeared_in_issue.id, ResourceTypes.ResourcesEnum.Issue, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        mResource.first_appeared_in_issue = gson.fromJson(response.toString(), IssueResource.class);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error Fetching Details for " + mResource.first_appeared_in_issue.id + ": " + error.getMessage());
-                    }
-                });
-
-                BackboneService.Post(c, mResource.description, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //desc.setText(response.toString());
-
-                        JSONArray sections = null;
-                        try {
-                            sections = response.getJSONArray("Sections");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (sections != null) {
-                            mResource.descriptionSections = sections;
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error Mapping Description: " + error.getMessage());
-                    }
-                });
             }
 
         }, new Response.ErrorListener() {
@@ -136,40 +93,23 @@ public class CharacterActivity extends ActionBarActivity
                 //TODO Handle TimeoutError etc
             }
         });
-
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         Fragment fragment = new PlaceholderFragment();
         switch (position) {
             case 0:
                 if (mResource != null) {
-                    fragment = CharacterFragment.newInstance(mResource);
+                    fragment = VolumeFragment.newInstance(mResource);
                 } else {
-                    fragment = new CharacterFragment();
+                    fragment = new VolumeFragment();
                 }
                 mTitle = "";
                 break;
             case 1:
-                if (mResource != null && mResource.descriptionSections != null) {
-                    fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
-                } else {
-                    fragment = new DescriptionListFragment();
-                }
-                break;
-            case 2:
-                if (mResource != null && mResource.first_appeared_in_issue.image != null) {
-                    fragment = FirstAppearanceFragment.newInstance(mResource.first_appeared_in_issue);
-                    mTitle = mResource.name;
-                } else {
-                    fragment = new FirstAppearanceFragment();
-                }
-                break;
-            case 3:
-                if (mResource != null && mResource.teams.size() > 0) {
-                    fragment = ResourceListFragment.newInstance(mResource.teams, ResourceTypes.ResourcesEnum.Team);
+                if (mResource != null && mResource.issues.size() > 0) {
+                    fragment = ResourceListFragment.newInstance(mResource.issues, ResourceTypes.ResourcesEnum.Issue);
                     mTitle = mResource.name;
                 } else {
                     fragment = new ResourceListFragment();
@@ -220,15 +160,8 @@ public class CharacterActivity extends ActionBarActivity
 
     @Override
     public void onResourceClick(int resId, ResourceTypes.ResourcesEnum resourceType) {
-        Intent intent = new Intent(this, TeamActivity.class);
-        intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onIssueClick(int issueId) {
         Intent intent = new Intent(this, IssueActivity.class);
-        intent.putExtra(ExtraTags.EXTRA_RES_ID, issueId);
+        intent.putExtra(ExtraTags.EXTRA_RES_ID, resId);
         startActivity(intent);
     }
 }

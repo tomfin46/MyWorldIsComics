@@ -17,6 +17,7 @@ public class BaseResource implements Serializable {
     public int id;
     public ImageObj image;
     public String name;
+    public PublisherResource publisher;
 
     public BaseResource() {
 
@@ -92,6 +93,14 @@ public class BaseResource implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PublisherResource getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(PublisherResource publisher) {
+        this.publisher = publisher;
     }
 }
 
