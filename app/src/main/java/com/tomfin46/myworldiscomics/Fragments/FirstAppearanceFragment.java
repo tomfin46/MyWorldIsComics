@@ -116,7 +116,9 @@ public class FirstAppearanceFragment extends Fragment {
         mNetImageView.setImageUrl(mIssue.image.super_url, imageLoader);
         mTxtVolumeName.setText(mIssue.volume.name);
         mTxtIssueNum.setText(mIssue.IssueNumberFormattedString);
-        mTxtDesc.setText(Html.fromHtml(mIssue.description));
+        if (mIssue.description != null) {
+            mTxtDesc.setText(Html.fromHtml(mIssue.description));
+        }
 
         mSpinner.setVisibility(View.GONE);
         mScrollView.setVisibility(View.VISIBLE);

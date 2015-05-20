@@ -20,8 +20,6 @@
 
     <string-array name="nav_generic">
         <item>@string/sec_res_bio</item>
-        <item>@string/sec_res_desc</item>
-        <item>@string/sec_res_first</item>
     </string-array>
 
 

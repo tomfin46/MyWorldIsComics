@@ -139,7 +139,9 @@ public class IssueFragment extends Fragment {
         mTxtIssueNum.setText(mResource.IssueNumberFormattedString);
         mTxtCoverDate.setText(mResource.CoverDateFormattedString);
         mTxtStoreDate.setText(mResource.StoreDateFormattedString);
-        mTxtDesc.setText(Html.fromHtml(mResource.description));
+        if (mResource.description != null) {
+            mTxtDesc.setText(Html.fromHtml(mResource.description));
+        }
 
         mSpinner.setVisibility(View.GONE);
         mScrollView.setVisibility(View.VISIBLE);

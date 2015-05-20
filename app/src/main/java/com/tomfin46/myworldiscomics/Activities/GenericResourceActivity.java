@@ -33,6 +33,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 public class GenericResourceActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         GenericResourceFragment.OnGenericResourceFragmentInteractionListener,
@@ -54,6 +57,7 @@ public class GenericResourceActivity extends ActionBarActivity
     private int mResId;
     private CharacterResource mResource;
     private ResourceTypes.ResourcesEnum mResourceType;
+    private LinkedList<String> mLabels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class GenericResourceActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
+        mLabels = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.nav_generic)));
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -91,19 +97,24 @@ public class GenericResourceActivity extends ActionBarActivity
 
                 mTitle = mResource.name;
 
-                BackboneService.Get(c, mResource.first_appeared_in_issue.id, ResourceTypes.ResourcesEnum.Issue, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        mResource.first_appeared_in_issue = gson.fromJson(response.toString(), IssueResource.class);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error Fetching Details for " + mResource.first_appeared_in_issue.id + ": " + error.getMessage());
-                    }
-                });
+                if (mResource.first_appeared_in_issue != null) {
+                    mLabels.add(getResources().getString(R.string.sec_res_first));
+
+                    BackboneService.Get(c, mResource.first_appeared_in_issue.id, ResourceTypes.ResourcesEnum.Issue, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            mResource.first_appeared_in_issue = gson.fromJson(response.toString(), IssueResource.class);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Error Fetching Details for " + mResource.first_appeared_in_issue.id + ": " + error.getMessage());
+                        }
+                    });
+                }
 
                 if (mResource.description != null) {
+                    mLabels.add(getResources().getString(R.string.sec_res_desc));
                     BackboneService.Post(c, mResource.description, new Response.Listener<JSONObject>() {
 
                         @Override
@@ -126,6 +137,13 @@ public class GenericResourceActivity extends ActionBarActivity
                         }
                     });
                 }
+
+                String[] l = mLabels.toArray(new String[mLabels.size()]);
+                // Set up the drawer.
+                mNavigationDrawerFragment.setUp(
+                        R.id.navigation_drawer,
+                        (DrawerLayout) findViewById(R.id.drawer_layout),
+                        l);
             }
 
         }, new Response.ErrorListener() {
@@ -142,16 +160,26 @@ public class GenericResourceActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         Fragment fragment = new PlaceholderFragment();
-        switch (position) {
-            case 0:
+
+        if (mLabels == null) {
+            if (mResource != null) {
+                fragment = GenericResourceFragment.newInstance(mResource);
+            } else {
+                fragment = new GenericResourceFragment();
+            }
+            mTitle = "";
+        }
+        else {
+            String label = mLabels.get(position);
+            if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_bio))) {
                 if (mResource != null) {
                     fragment = GenericResourceFragment.newInstance(mResource);
                 } else {
                     fragment = new GenericResourceFragment();
                 }
                 mTitle = "";
-                break;
-            case 1:
+            }
+            else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_desc))) {
                 if (mResource != null && mResource.descriptionSections != null) {
                     fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
                 } else if (mResource.description == null) {
@@ -159,15 +187,15 @@ public class GenericResourceActivity extends ActionBarActivity
                 } else {
                     fragment = new DescriptionListFragment();
                 }
-                break;
-            case 2:
+            }
+            else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_first))) {
                 if (mResource != null && mResource.first_appeared_in_issue.image != null) {
                     fragment = FirstAppearanceFragment.newInstance(mResource.first_appeared_in_issue);
                     mTitle = mResource.name;
                 } else {
                     fragment = new FirstAppearanceFragment();
                 }
-                break;
+            }
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
