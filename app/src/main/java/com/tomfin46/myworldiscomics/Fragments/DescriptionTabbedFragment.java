@@ -3,15 +3,15 @@ package com.tomfin46.myworldiscomics.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tomfin46.myworldiscomics.Adapters.DescriptionListAdapter;
+import com.tomfin46.myworldiscomics.Adapters.DescriptionPagerAdapter;
+import com.tomfin46.myworldiscomics.Helpers.SlidingTab.SlidingTabLayout;
 import com.tomfin46.myworldiscomics.R;
 
 import org.json.JSONArray;
@@ -22,11 +22,10 @@ import org.json.JSONException;
  * Activities that contain this fragment must implement the
  * {@link OnDescriptionListFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DescriptionListFragment#newInstance} factory method to
+ * Use the {@link DescriptionTabbedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DescriptionListFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class DescriptionTabbedFragment extends Fragment {
     private static final String ARG_SECTIONS = "sections";
 
     private JSONArray mSections;
@@ -35,25 +34,27 @@ public class DescriptionListFragment extends Fragment {
 
     private ProgressBar mSpinner;
     private LinearLayout mRootListLayout;
-    private RecyclerView mRecyclerView;
+    private DescriptionPagerAdapter mPagerAdapter;
+    private ViewPager mPager;
+    private SlidingTabLayout mSlidingTab;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param sections Parameter 1.
-     * @return A new instance of fragment DescriptionListFragment.
+     * @return A new instance of fragment DescriptionTabbedFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DescriptionListFragment newInstance(JSONArray sections) {
-        DescriptionListFragment fragment = new DescriptionListFragment();
+    public static DescriptionTabbedFragment newInstance(JSONArray sections) {
+        DescriptionTabbedFragment fragment = new DescriptionTabbedFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SECTIONS, sections.toString());
         fragment.setArguments(args);
         return fragment;
     }
 
-    public DescriptionListFragment() {
+    public DescriptionTabbedFragment() {
         // Required empty public constructor
     }
 
@@ -72,13 +73,13 @@ public class DescriptionListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_description_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_description_tabs, container, false);
 
         mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         mRootListLayout = (LinearLayout) rootView.findViewById(R.id.root_list_layout);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.sections);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        mPager = (ViewPager) rootView.findViewById(R.id.view_pager);
+        mSlidingTab = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
 
         if (mSections != null) {
             updateFragment();
@@ -105,8 +106,21 @@ public class DescriptionListFragment extends Fragment {
     }
 
     private void updateFragment() {
-        DescriptionListAdapter adapter = new DescriptionListAdapter(getActivity(), mSections, R.layout.description_item);
-        mRecyclerView.setAdapter(adapter);
+
+        mPagerAdapter = new DescriptionPagerAdapter(getActivity().getSupportFragmentManager(), mSections);
+        mPager.setAdapter(mPagerAdapter);
+        mSlidingTab.setViewPager(mPager);
+        mSlidingTab.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.primary_dark);
+            }
+
+            @Override
+            public int getDividerColor(int position) {
+                return 0;
+            }
+        });
 
         mSpinner.setVisibility(View.GONE);
         mRootListLayout.setVisibility(View.VISIBLE);

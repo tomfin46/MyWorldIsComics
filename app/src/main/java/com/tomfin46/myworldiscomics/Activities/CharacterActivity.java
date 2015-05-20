@@ -21,7 +21,8 @@ import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
 import com.tomfin46.myworldiscomics.Fragments.CharacterFragment;
-import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionTabbedFragment;
 import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
 import com.tomfin46.myworldiscomics.Fragments.PlaceholderFragment;
@@ -39,7 +40,8 @@ public class CharacterActivity extends ActionBarActivity
         CharacterFragment.OnCharacterFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
-        DescriptionListFragment.OnDescriptionListFragmentInteractionListener {
+        DescriptionTabbedFragment.OnDescriptionListFragmentInteractionListener,
+        DescriptionFragment.OnDescriptionFragmentInteractionListener {
 
     final static String TAG = "CharacterActivity";
 
@@ -154,9 +156,9 @@ public class CharacterActivity extends ActionBarActivity
                 break;
             case 1:
                 if (mResource != null && mResource.descriptionSections != null) {
-                    fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
+                    fragment = DescriptionTabbedFragment.newInstance(mResource.descriptionSections);
                 } else {
-                    fragment = new DescriptionListFragment();
+                    fragment = new DescriptionTabbedFragment();
                 }
                 break;
             case 2:

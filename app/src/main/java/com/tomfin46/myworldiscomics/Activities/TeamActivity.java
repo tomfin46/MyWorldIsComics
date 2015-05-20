@@ -22,7 +22,8 @@ import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.TeamResource;
-import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionTabbedFragment;
 import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
 import com.tomfin46.myworldiscomics.Fragments.PlaceholderFragment;
@@ -44,7 +45,8 @@ import java.util.LinkedList;
 public class TeamActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         TeamFragment.OnTeamFragmentInteractionListener,
-        DescriptionListFragment.OnDescriptionListFragmentInteractionListener,
+        DescriptionTabbedFragment.OnDescriptionListFragmentInteractionListener,
+        DescriptionFragment.OnDescriptionFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener {
 
@@ -206,10 +208,10 @@ public class TeamActivity extends ActionBarActivity
                 mTitle = "";}
             else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_res_desc))) {
                 if (mResource != null && mResource.descriptionSections != null) {
-                    fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
+                    fragment = DescriptionTabbedFragment.newInstance(mResource.descriptionSections);
                     mTitle = mResource.name;
                 } else {
-                    fragment = new DescriptionListFragment();
+                    fragment = new DescriptionTabbedFragment();
                 }
             }
             else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_res_first))) {

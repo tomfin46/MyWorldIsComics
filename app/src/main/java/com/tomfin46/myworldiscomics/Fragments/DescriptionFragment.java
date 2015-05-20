@@ -1,14 +1,18 @@
-package com.tomfin46.myworldiscomics.Adapters;
+package com.tomfin46.myworldiscomics.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.v7.widget.RecyclerView;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -20,30 +24,50 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Created by Tom on 19/05/2015.
+ * Created by Tom on 20/05/2015.
  */
-public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionListAdapter.ViewHolder> {
+public class DescriptionFragment extends Fragment {
 
+    public static final String ARG_SECTION = "section";
+
+    private JSONObject mSection;
+    private View mDescView;
     private Context mContext;
-    private JSONArray mSections;
-    private Map<String, View> mViewMap;
-    private int mLayoutResId;
 
-    public DescriptionListAdapter(Context context, JSONArray sections, int layoutResId) {
-        mContext = context;
-        mSections = sections;
-        mViewMap = new HashMap<>();
-        mLayoutResId = layoutResId;
+    private OnDescriptionFragmentInteractionListener mCallback;
 
-        for (int a = 0; a < mSections.length(); ++a) {
+    private ProgressBar mSpinner;
+    private ScrollView mScrollView;
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param section Parameter 1.
+     * @return A new instance of fragment DescriptionTabbedFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static DescriptionFragment newInstance(String section) {
+        DescriptionFragment fragment = new DescriptionFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SECTION, section);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public DescriptionFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
             try {
-                JSONObject section = (JSONObject) mSections.get(a);
-                View v = createContent(section);
-                mViewMap.put(section.getString("Title"), v);
+                mContext = getActivity();
+                mSection = new JSONObject(getArguments().getString(ARG_SECTION));
+                mDescView = createContent(mSection);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -51,63 +75,45 @@ public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionList
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(mLayoutResId, parent, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_description, container, false);
 
-        return new ViewHolder(v);
+        mSpinner = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+        mScrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
+
+        if (mSection != null) {
+            updateFragment();
+        }
+
+        return rootView;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         try {
-            JSONObject section = (JSONObject) mSections.get(position);
-            String title = section.getString("Title");
-
-            holder.mTitle.setText(title);
-            View view = mViewMap.get(title);
-            int visibility = holder.mContent.getVisibility();
-            holder.mContent.removeAllViewsInLayout();
-            if (view.getParent() != null) {
-                ((ViewGroup) view.getParent()).removeView(view);
-            }
-            holder.mContent.addView(view);
-            holder.mContent.setVisibility(visibility);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            mCallback = (OnDescriptionFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnDescriptionFragmentInteractionListener");
         }
     }
 
     @Override
-    public int getItemCount() {
-        return mSections.length();
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTitle;
-        LinearLayout mContent;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            mTitle = (TextView) itemView.findViewById(R.id.title);
-            mContent = (LinearLayout) itemView.findViewById(R.id.content);
-
-            mTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mContent.getVisibility() == View.VISIBLE) {
-                        mContent.setVisibility(View.GONE);
-                    } else {
-                        mContent.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
+    private void updateFragment() {
+        if (mDescView.getParent() != null) {
+            ((ViewGroup) mDescView.getParent()).removeView(mDescView);
         }
+        mScrollView.addView(mDescView);
 
-        public void setContent(View view) {
-            mContent.addView(view);
-        }
-
+        mSpinner.setVisibility(View.GONE);
+        mScrollView.setVisibility(View.VISIBLE);
     }
 
     private View createContent(JSONObject descSection) throws JSONException {
@@ -220,5 +226,18 @@ public class DescriptionListAdapter extends RecyclerView.Adapter<DescriptionList
         txtQuote.setText(quote.getString("Text"));
 
         return txtQuote;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnDescriptionFragmentInteractionListener {
     }
 }

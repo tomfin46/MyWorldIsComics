@@ -20,7 +20,8 @@ import com.google.gson.Gson;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 import com.tomfin46.myworldiscomics.DataModel.Resources.CharacterResource;
 import com.tomfin46.myworldiscomics.DataModel.Resources.IssueResource;
-import com.tomfin46.myworldiscomics.Fragments.DescriptionListFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionFragment;
+import com.tomfin46.myworldiscomics.Fragments.DescriptionTabbedFragment;
 import com.tomfin46.myworldiscomics.Fragments.FirstAppearanceFragment;
 import com.tomfin46.myworldiscomics.Fragments.GenericResourceFragment;
 import com.tomfin46.myworldiscomics.Fragments.NavigationDrawerFragment;
@@ -40,7 +41,8 @@ public class GenericResourceActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         GenericResourceFragment.OnGenericResourceFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
-        DescriptionListFragment.OnDescriptionListFragmentInteractionListener {
+        DescriptionTabbedFragment.OnDescriptionListFragmentInteractionListener,
+        DescriptionFragment.OnDescriptionFragmentInteractionListener {
 
     final static String TAG = "GenericResourceActivity";
 
@@ -168,8 +170,7 @@ public class GenericResourceActivity extends ActionBarActivity
                 fragment = new GenericResourceFragment();
             }
             mTitle = "";
-        }
-        else {
+        } else {
             String label = mLabels.get(position);
             if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_bio))) {
                 if (mResource != null) {
@@ -178,30 +179,29 @@ public class GenericResourceActivity extends ActionBarActivity
                     fragment = new GenericResourceFragment();
                 }
                 mTitle = "";
-            }
-            else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_desc))) {
+            } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_desc))) {
                 if (mResource != null && mResource.descriptionSections != null) {
-                    fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
+                    fragment = DescriptionTabbedFragment.newInstance(mResource.descriptionSections);
                 } else if (mResource.description == null) {
-                    fragment = DescriptionListFragment.newInstance(new JSONArray());
+                    fragment = DescriptionTabbedFragment.newInstance(new JSONArray());
                 } else {
-                    fragment = new DescriptionListFragment();
+                    fragment = new DescriptionTabbedFragment();
                 }
-            }
-            else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_first))) {
+            } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_first))) {
                 if (mResource != null && mResource.first_appeared_in_issue.image != null) {
                     fragment = FirstAppearanceFragment.newInstance(mResource.first_appeared_in_issue);
                     mTitle = mResource.name;
                 } else {
                     fragment = new FirstAppearanceFragment();
                 }
-            }
-        }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
+            }
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
     }
 
     public void restoreActionBar() {

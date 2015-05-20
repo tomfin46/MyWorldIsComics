@@ -42,8 +42,8 @@ public class SearchResultsActivity extends ActionBarActivity
 
     private SearchResultsPagerAdapter mPagerAdapter;
     private ViewPager mPager;
-    private ProgressBar mProgressBar;
     private SlidingTabLayout mSlidingTab;
+    private ProgressBar mProgressBar;
     private LinearLayout mRootLayout;
 
     @Override
