@@ -11,32 +11,44 @@
         android:theme="@style/MaterialTheme" >
         <activity
             android:name=".Activities.HubActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Activities.SearchResultsActivity" />
         </activity>
         <activity
             android:name=".Activities.CharacterActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
+            android:label="@string/title_activity_main" />
         <activity
             android:name=".Activities.TeamActivity"
-            android:label="@string/title_activity_team" >
-        </activity>
+            android:label="@string/title_activity_team" />
         <activity
             android:name=".Activities.IssueActivity"
-            android:label="@string/title_activity_issue" >
-        </activity>
+            android:label="@string/title_activity_issue" />
         <activity
             android:name=".Activities.GenericResourceActivity"
-            android:label="@string/title_activity_generic_resource" >
-        </activity>
+            android:label="@string/title_activity_generic_resource" />
         <activity
             android:name=".Activities.VolumeActivity"
-            android:label="@string/title_activity_volume" >
+            android:label="@string/title_activity_volume" />
+        <activity
+            android:name=".Activities.SearchResultsActivity"
+            android:label="@string/title_activity_search_results"
+            android:launchMode="singleTop" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
     </application>
 

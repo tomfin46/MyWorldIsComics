@@ -55,4 +55,7 @@
     <string name="title_activity_issue">IssueActivity</string>
     <string name="title_activity_generic_resource">GenericResourceActivity</string>
     <string name="title_activity_volume">VolumeActivity</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search My World Is Comics</string>
+    <string name="title_activity_search_results">SearchResultsActivity</string>
 </resources>

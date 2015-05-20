@@ -80,8 +80,13 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
         if (resource.image != null) {
             holder.mImage.setImageUrl(resource.image.super_url, mImageLoader);
         }
-        if (ResourceTypes.GetResourceClass(mResourcesType).equals(IssueResource.class)) {
-            holder.mName.setText(((IssueResource)resource).IssueNumberFormattedString + ": " + ((IssueResource) resource).name);
+        if (resource instanceof IssueResource) {
+            String name = ((IssueResource)resource).IssueNumberFormattedString;
+            if (((IssueResource) resource).name != null && !((IssueResource) resource).name.equalsIgnoreCase("null")) {
+                name += ": " + ((IssueResource) resource).name;
+            }
+
+            holder.mName.setText(name);
             if (((IssueResource) resource).description != null) {
                 holder.mDeck.setText(Html.fromHtml(((IssueResource) resource).description));
             }

@@ -37,7 +37,7 @@ public class IssueActivity extends ActionBarActivity
         IssueFragment.OnIssueFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener {
 
-    final static String TAG = "IssueActivity";
+        final static String TAG = "IssueActivity";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -89,7 +89,7 @@ public class IssueActivity extends ActionBarActivity
                 bioData.putExtra(ExtraTags.EXTRA_FRAG_NUM, 3);
                 sendBroadcast(bioData);
 
-                mTitle = mResource.name;
+                mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
 
                 String filter = "Person_Credits,Character_Credits,Team_Credits,Location_Credits,Concept_Credits,Object_Credits,Story_Arc_Credits";
                 BackboneService.Get(c, mResource.id, ResourceTypes.ResourcesEnum.Issue, filter, new Response.Listener<JSONObject>() {
@@ -177,49 +177,49 @@ public class IssueActivity extends ActionBarActivity
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_creators))) {
                 if (mResource != null && mResource.person_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.person_credits, ResourceTypes.ResourcesEnum.Person);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_characters))) {
                 if (mResource != null && mResource.character_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.character_credits, ResourceTypes.ResourcesEnum.Character);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_teams))) {
                 if (mResource != null && mResource.team_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.team_credits, ResourceTypes.ResourcesEnum.Team);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_locations))) {
                 if (mResource != null && mResource.location_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.location_credits, ResourceTypes.ResourcesEnum.Location);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_concepts))) {
                 if (mResource != null && mResource.concept_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.concept_credits, ResourceTypes.ResourcesEnum.Concept);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_objects))) {
                 if (mResource != null && mResource.object_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.object_credits, ResourceTypes.ResourcesEnum.Object);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }
             } else if (label.equalsIgnoreCase(getResources().getString(R.string.sec_issue_story_arcs))) {
                 if (mResource != null && mResource.story_arc_credits.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.story_arc_credits, ResourceTypes.ResourcesEnum.StoryArc);
-                    mTitle = mResource.name;
+                    mTitle = mResource.volume.name + " " + mResource.IssueNumberFormattedString;
                 } else {
                     fragment = new ResourceListFragment();
                 }

@@ -29,8 +29,8 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ResourceListFragment<T extends BaseResource> extends Fragment {
-    private static final String ARG_RESOURCES = "resources";
-    private static final String ARG_RESOURCES_TYPE = "resources_type";
+    public static final String ARG_RESOURCES = "resources";
+    public static final String ARG_RESOURCES_TYPE = "resources_type";
 
     private OnResourceListFragmentInteractionListener mCallback;
 

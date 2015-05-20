@@ -21,6 +21,7 @@ import com.tomfin46.myworldiscomics.DataModel.Resources.VolumeResource;
  */
 public class ResourceTypes
 {
+
     public enum ResourcesEnum
     {
         Character,
@@ -114,6 +115,60 @@ public class ResourceTypes
                 return "movie";
             default:
                 return "";
+        }
+    }
+
+    public static ResourcesEnum getResourceEnum(String resourceTerm) {
+        switch (resourceTerm)
+        {
+            case "character":
+                return ResourcesEnum.Character;
+            case "characters":
+                return ResourcesEnum.Characters;
+            case "search":
+                return ResourcesEnum.Search;
+            case "team":
+                return ResourcesEnum.Team;
+            case "teams":
+                return ResourcesEnum.Teams;
+            case "issue":
+                return ResourcesEnum.Issue;
+            case "issues":
+                return ResourcesEnum.Issues;
+            case "person":
+                return ResourcesEnum.Person;
+            case "people":
+                return ResourcesEnum.People;
+            case "location":
+                return ResourcesEnum.Location;
+            case "locations":
+                return ResourcesEnum.Locations;
+            case "concept":
+                return ResourcesEnum.Concept;
+            case "concepts":
+                return ResourcesEnum.Concepts;
+            case "object":
+                return ResourcesEnum.Object;
+            case "objects":
+                return ResourcesEnum.Objects;
+            case "story_arc":
+                return ResourcesEnum.StoryArc;
+            case "story_arcs":
+                return ResourcesEnum.StoryArcs;
+            case "volume":
+                return ResourcesEnum.Volume;
+            case "volumes":
+                return ResourcesEnum.Volumes;
+            case "publisher":
+                return ResourcesEnum.Publisher;
+            case "movie":
+                return ResourcesEnum.Movie;
+            case "episode":
+                return ResourcesEnum.Episode;
+            case "video":
+                return ResourcesEnum.Video;
+            default:
+                return ResourcesEnum.Error;
         }
     }
 

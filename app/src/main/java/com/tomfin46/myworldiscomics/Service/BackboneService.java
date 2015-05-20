@@ -4,12 +4,16 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.tomfin46.myworldiscomics.DataModel.Enums.ResourceTypes;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 /**
@@ -24,6 +28,7 @@ public class BackboneService {
         JSONObject postParameter = null;
         MakeRequest(ctx, Request.Method.GET, url, postParameter, listener, errorListener);
     }
+
     public static void Get(Context ctx, int id, ResourceTypes.ResourcesEnum resourceType, String filter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = UrlConstructor.constructCv(resourceType, Integer.toString(id), filter);
         JSONObject postParameter = null;
@@ -37,6 +42,16 @@ public class BackboneService {
 
     public static void Post(Context ctx, String url, JSONObject postParameter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         MakeRequest(ctx, Request.Method.POST, url, postParameter, listener, errorListener);
+    }
+
+    public static void Search(Context ctx, String query, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+        try {
+            query = URLEncoder.encode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url = UrlConstructor.constructCv(ResourceTypes.ResourcesEnum.Search, query);
+        MakeRequest(ctx, url, listener, errorListener);
     }
 
     private static void MakeRequest(Context ctx, int requestMethodType, String url, JSONObject postParameter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
@@ -57,6 +72,11 @@ public class BackboneService {
                 return "application/json";
             }
         };
+        AddRequestToQueue(ctx, jsonObjectRequest);
+    }
+
+    private static void MakeRequest(Context ctx, String url, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url, listener, errorListener);
         AddRequestToQueue(ctx, jsonObjectRequest);
     }
 

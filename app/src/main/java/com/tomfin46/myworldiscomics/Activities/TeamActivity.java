@@ -40,7 +40,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 public class TeamActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -63,6 +62,7 @@ public class TeamActivity extends ActionBarActivity
 
     private int mResId;
     private TeamResource mResource;
+    private LinkedList<String> mLabels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,8 @@ public class TeamActivity extends ActionBarActivity
 
         mNavDrawerTeamFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+
+        mLabels = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.nav_team)));
 
         // Set up the drawer.
         mNavDrawerTeamFragment.setUp(
@@ -134,7 +135,8 @@ public class TeamActivity extends ActionBarActivity
                     }
                 });
 
-                final Type listType = new TypeToken<ArrayList<CharacterResource>>(){}.getType();
+                final Type listType = new TypeToken<ArrayList<CharacterResource>>() {
+                }.getType();
                 String filter = "Characters,Character_Enemies,Character_Friends";
                 BackboneService.Get(c, mResource.id, ResourceTypes.ResourcesEnum.Team, filter, new Response.Listener<JSONObject>() {
                     @Override
@@ -144,18 +146,17 @@ public class TeamActivity extends ActionBarActivity
                         mResource.character_enemies = team.character_enemies;
                         mResource.characters_friends = team.characters_friends;
 
-                        List<String> labels = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.nav_team)));
                         if (mResource.characters.size() > 0) {
-                            labels.add(getResources().getString(R.string.sec_team_members));
+                            mLabels.add(getResources().getString(R.string.sec_team_members));
                         }
                         if (mResource.character_enemies.size() > 0) {
-                            labels.add(getResources().getString(R.string.sec_team_enemies));
+                            mLabels.add(getResources().getString(R.string.sec_team_enemies));
                         }
                         if (mResource.characters_friends.size() > 0) {
-                            labels.add(getResources().getString(R.string.sec_team_allies));
+                            mLabels.add(getResources().getString(R.string.sec_team_allies));
                         }
 
-                        String[] l = labels.toArray(new String[labels.size()]);
+                        String[] l = mLabels.toArray(new String[mLabels.size()]);
                         // Set up the drawer.
                         mNavDrawerTeamFragment.setUp(
                                 R.id.navigation_drawer,
@@ -185,55 +186,64 @@ public class TeamActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         Fragment fragment = new PlaceholderFragment();
-        switch (position) {
-            case 0:
+
+        if (mLabels == null) {
+            if (mResource != null) {
+                fragment = TeamFragment.newInstance(mResource);
+            } else {
+                fragment = new TeamFragment();
+            }
+            mTitle = "";
+        }
+        else {
+            String label = mLabels.get(position);
+            if (label.equalsIgnoreCase(getResources().getString(R.string.sec_res_bio))) {
                 if (mResource != null) {
                     fragment = TeamFragment.newInstance(mResource);
                 } else {
                     fragment = new TeamFragment();
                 }
-                mTitle = "";
-                break;
-            case 1:
+                mTitle = "";}
+            else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_res_desc))) {
                 if (mResource != null && mResource.descriptionSections != null) {
                     fragment = DescriptionListFragment.newInstance(mResource.descriptionSections);
                     mTitle = mResource.name;
                 } else {
                     fragment = new DescriptionListFragment();
                 }
-                break;
-            case 2:
+            }
+            else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_res_first))) {
                 if (mResource != null && mResource.first_appeared_in_issue.image != null) {
                     fragment = FirstAppearanceFragment.newInstance(mResource.first_appeared_in_issue);
                     mTitle = mResource.name;
                 } else {
                     fragment = new FirstAppearanceFragment();
                 }
-                break;
-            case 3:
+            }
+            else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_team_members))) {
                 if (mResource != null && mResource.characters.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.characters, ResourceTypes.ResourcesEnum.Character);
                     mTitle = mResource.name;
                 } else {
                     fragment = new ResourceListFragment();
                 }
-                break;
-            case 4:
+            }
+            else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_team_enemies))) {
                 if (mResource != null && mResource.character_enemies.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.character_enemies, ResourceTypes.ResourcesEnum.Character);
                     mTitle = mResource.name;
                 } else {
                     fragment = new ResourceListFragment();
                 }
-                break;
-            case 5:
+            }
+            else if(label.equalsIgnoreCase(getResources().getString(R.string.sec_team_allies))) {
                 if (mResource != null && mResource.characters_friends.size() > 0) {
                     fragment = ResourceListFragment.newInstance(mResource.characters_friends, ResourceTypes.ResourcesEnum.Character);
                     mTitle = mResource.name;
                 } else {
                     fragment = new ResourceListFragment();
                 }
-                break;
+            }
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
