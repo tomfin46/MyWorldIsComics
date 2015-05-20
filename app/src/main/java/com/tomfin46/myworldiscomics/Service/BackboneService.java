@@ -2,6 +2,7 @@ package com.tomfin46.myworldiscomics.Service;
 
 import android.content.Context;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -61,6 +62,7 @@ public class BackboneService {
 
     private static void MakeRequest(Context ctx, int requestMethodType, String url, JSONObject postParameter, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethodType, url, postParameter, listener, errorListener);
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(ServiceConstants.TimeoutMs, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         AddRequestToQueue(ctx, jsonObjectRequest);
     }
 
@@ -77,12 +79,14 @@ public class BackboneService {
                 return "application/json";
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(ServiceConstants.TimeoutMs, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         AddRequestToQueue(ctx, jsonObjectRequest);
     }
 
     private static void MakeRequest(Context ctx, String url, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
-        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url, listener, errorListener);
-        AddRequestToQueue(ctx, jsonObjectRequest);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, listener, errorListener);
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(ServiceConstants.SearchTimeoutMs, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AddRequestToQueue(ctx, jsonArrayRequest);
     }
 
     private static void AddRequestToQueue(Context ctx, JsonRequest request) {

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My World Is Comics</string>
 
-    <string name="welcome_message">Welcome to My World Is Comics, your one stop location for all things in the multiverse.\n\nClick the button bellow to travel to a character page and explore from there or browse the trending lists from the navigation drawer on the left</string>
+    <string name="welcome_message">Welcome to My World Is Comics, your one stop location for all things in the multiverse.\n\nClick the button below to travel to a character page and explore from there or browse the trending lists from the navigation drawer on the left</string>
 
     <!-- Section Titles -->
     <string name="sec_hub_home">Home</string>
