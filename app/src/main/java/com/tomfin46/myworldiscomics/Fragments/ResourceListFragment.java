@@ -31,6 +31,7 @@ import java.util.List;
 public class ResourceListFragment<T extends BaseResource> extends Fragment {
     public static final String ARG_RESOURCES = "resources";
     public static final String ARG_RESOURCES_TYPE = "resources_type";
+    public static final String ARG_ITEM_RES_ID = "item_resource_id";
 
     private OnResourceListFragmentInteractionListener mCallback;
 
@@ -111,7 +112,7 @@ public class ResourceListFragment<T extends BaseResource> extends Fragment {
     }
 
     private void updateFragment() {
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mResources, R.layout.recycler_view_item, mResourcesType);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mResources, R.layout.new_comics_item, mResourcesType);
         mRecyclerView.setAdapter(adapter);
 
         mSpinner.setVisibility(View.GONE);

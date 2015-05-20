@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">My World Is Comics</string>
 
+    <string name="welcome_message">Welcome to My World Is Comics, your one stop location for all things in the multiverse.\n\nClick the button bellow to travel to a character page and explore from there or browse the trending lists from the navigation drawer on the left</string>
+
+    <!-- Section Titles -->
+    <string name="sec_hub_home">Home</string>
+    <string name="sec_hub_chars">Trending Characters</string>
+    <string name="sec_hub_new_comics">New Comics</string>
+    <string name="sec_hub_teams">Trending Teams</string>
+
     <string name="sec_res_bio">General Information</string>
     <string name="sec_res_desc">Full Biography</string>
     <string name="sec_res_first">First Appearance</string>
@@ -23,6 +31,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
 
     <!-- Menu Items -->
     <string name="action_example">Example action</string>
@@ -50,7 +59,7 @@
 
     <!-- Activities -->
     <string name="title_activity_hub">HubActivity</string>
-    <string name="title_activity_main">CharacterActivity</string>
+    <string name="title_activity_character">CharacterActivity</string>
     <string name="title_activity_team">TeamActivity</string>
     <string name="title_activity_issue">IssueActivity</string>
     <string name="title_activity_generic_resource">GenericResourceActivity</string>

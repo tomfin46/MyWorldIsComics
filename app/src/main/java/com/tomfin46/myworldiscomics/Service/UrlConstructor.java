@@ -20,6 +20,12 @@ public class UrlConstructor {
         return contructCv(resourcesEnum, query, RequestType.RequestTypeEnum.Filtered, filter);
     }
 
+    public static String constructCv(ResourceTypes.ResourcesEnum resourcesEnum, String sort, String filter, int limit) {
+        String uri = contructCv(resourcesEnum, "", RequestType.RequestTypeEnum.Basic, "");
+        uri += "&sort=" + sort + "&filter=" + filter + "&limit=" + limit;
+        return uri;
+    }
+
     public static String contructCv(ResourceTypes.ResourcesEnum resourcesEnum, String query, RequestType.RequestTypeEnum requestType, String filter)
     {
         String uri = ServiceConstants.ServiceBaseUrl + ServiceConstants.ComicVineController + ResourceTypes.getResourceTerm(resourcesEnum).replace("_", "") + "/";

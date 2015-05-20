@@ -1,5 +1,6 @@
 package com.tomfin46.myworldiscomics.Activities;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,8 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CharacterActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+public class CharacterActivity extends ActionBarActivity implements
+        NavigationDrawerFragment.NavigationDrawerCallbacks,
         CharacterFragment.OnCharacterFragmentInteractionListener,
         ResourceListFragment.OnResourceListFragmentInteractionListener,
         FirstAppearanceFragment.OnFirstAppearanceFragmentInteractionListener,
@@ -200,6 +202,11 @@ public class CharacterActivity extends ActionBarActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.resource, menu);
             restoreActionBar();
+
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
             return true;
         }
         return super.onCreateOptionsMenu(menu);

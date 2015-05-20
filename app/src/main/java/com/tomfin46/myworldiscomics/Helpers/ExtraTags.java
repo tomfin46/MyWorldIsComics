@@ -12,4 +12,5 @@ public class ExtraTags {
     public final static String EXTRA_TEAM = "com.tomfin46.myworldiscomics.TEAM";
     public final static String EXTRA_ISSUE = "com.tomfin46.myworldiscomics.ISSUE";
     public final static String EXTRA_VOLUME = "com.tomfin46.myworldiscomics.VOLUME";
+    public final static String EXTRA_RES_LIST = "com.tomfin46.myworldiscomics.RESLIST";
 }

@@ -4,12 +4,13 @@
     tools:context="com.tomfin46.myworldiscomics.Activities.VolumeActivity">
 
     <item
+        android:id="@+id/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/search_title"
+        app:showAsAction="collapseActionView|ifRoom" />
+    <item
         android:id="@+id/itm_publisher"
         android:title="@string/menu_volume"
         app:showAsAction="withText|ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 </menu>

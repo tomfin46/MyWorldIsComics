@@ -45,7 +45,7 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
         mImageLoader = RequestQueueSingleton.getInstance(mContext).getImageLoader();
 
 
-        for (int a=0; a<resources.size(); ++a) {
+        for (int a = 0; a < resources.size(); ++a) {
             final T resource = resources.get(a);
             final int finalA = a;
             BackboneService.Get(mContext, resource.id, resourcesType, new Response.Listener<JSONObject>() {
@@ -77,22 +77,32 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
     public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder holder, int position) {
 
         final T resource = mResources.get(position);
+
         if (resource.image != null) {
             holder.mImage.setImageUrl(resource.image.super_url, mImageLoader);
         }
         if (resource instanceof IssueResource) {
-            String name = ((IssueResource)resource).IssueNumberFormattedString;
-            if (((IssueResource) resource).name != null && !((IssueResource) resource).name.equalsIgnoreCase("null")) {
-                name += ": " + ((IssueResource) resource).name;
+            if (((IssueResource) resource).volume != null) {
+                holder.mName.setText(((IssueResource) resource).volume.name + " " + ((IssueResource) resource).IssueNumberFormattedString);
+                String name = ((IssueResource) resource).IssueNumberFormattedString;
+                if (((IssueResource) resource).name != null && !((IssueResource) resource).name.equalsIgnoreCase("null")) {
+                    name += ": " + ((IssueResource) resource).name;
+                }
+                holder.mTitle.setText(name);
+            } else {
+                String name = ((IssueResource) resource).IssueNumberFormattedString;
+                if (((IssueResource) resource).name != null && !((IssueResource) resource).name.equalsIgnoreCase("null")) {
+                    name += ": " + ((IssueResource) resource).name;
+                }
+                holder.mName.setText(name);
             }
 
-            holder.mName.setText(name);
             if (((IssueResource) resource).description != null) {
-                holder.mDeck.setText(Html.fromHtml(((IssueResource) resource).description));
+                holder.mDesc.setText(Html.fromHtml(((IssueResource) resource).description));
             }
         } else {
             holder.mName.setText(resource.name);
-            holder.mDeck.setText(resource.deck);
+            holder.mDesc.setText(resource.deck);
         }
     }
 
@@ -105,14 +115,16 @@ public class RecyclerViewAdapter<T extends BaseResource> extends RecyclerView.Ad
     public static class ViewHolder extends RecyclerView.ViewHolder {
         NetworkImageView mImage;
         TextView mName;
-        TextView mDeck;
+        TextView mDesc;
+        TextView mTitle;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             mImage = (NetworkImageView) itemView.findViewById(R.id.img);
             mName = (TextView) itemView.findViewById(R.id.name);
-            mDeck = (TextView) itemView.findViewById(R.id.deck);
+            mDesc = (TextView) itemView.findViewById(R.id.desc);
+            mTitle = (TextView) itemView.findViewById(R.id.title);
         }
     }
 }

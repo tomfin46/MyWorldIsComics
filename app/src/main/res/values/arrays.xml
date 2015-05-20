@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="nav_hub">
+        <item>@string/sec_hub_home</item>
+        <item>@string/sec_hub_chars</item>
+        <item>@string/sec_hub_new_comics</item>
+        <item>@string/sec_hub_teams</item>
+    </string-array>
+
     <string-array name="nav_char">
         <item>@string/sec_res_bio</item>
         <item>@string/sec_res_desc</item>

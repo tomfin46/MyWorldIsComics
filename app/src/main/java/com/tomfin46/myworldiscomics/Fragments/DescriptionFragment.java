@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,7 +195,7 @@ public class DescriptionFragment extends Fragment {
         if (caption != null && !caption.equalsIgnoreCase("null")) {
             TextView txtCaption = new TextView(mContext);
             txtCaption.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            txtCaption.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            txtCaption.setGravity(Gravity.CENTER_HORIZONTAL);
             txtCaption.setTypeface(null, Typeface.ITALIC);
             txtCaption.setText(caption);
             layout.addView(txtCaption);
@@ -221,7 +222,7 @@ public class DescriptionFragment extends Fragment {
     private View createQuote(JSONObject quote) throws JSONException {
         TextView txtQuote = new TextView(mContext);
         txtQuote.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        txtQuote.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        txtQuote.setGravity(Gravity.CENTER_HORIZONTAL);
         txtQuote.setTypeface(null, Typeface.BOLD);
         txtQuote.setText(quote.getString("Text"));
 

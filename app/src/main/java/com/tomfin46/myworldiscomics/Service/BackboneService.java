@@ -44,6 +44,11 @@ public class BackboneService {
         MakeRequest(ctx, Request.Method.POST, url, postParameter, listener, errorListener);
     }
 
+    public static void Get(Context ctx, ResourceTypes.ResourcesEnum resourceType, String sort, String filter, int limit, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+        String url = UrlConstructor.constructCv(resourceType, sort, filter, limit);
+        MakeRequest(ctx, url, listener, errorListener);
+    }
+
     public static void Search(Context ctx, String query, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
         try {
             query = URLEncoder.encode(query, "UTF-8");

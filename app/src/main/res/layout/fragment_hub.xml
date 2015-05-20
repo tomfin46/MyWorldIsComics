@@ -11,18 +11,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_large_material"
+            android:text="@string/welcome_message"
+            android:gravity="center_horizontal" />
 
         <Button
             android:id="@+id/btnHawkeye"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hawkeye" />
+            android:text="Hawkeye"
+            android:background="@color/primary"
+            android:layout_marginTop="@dimen/activity_horizontal_margin" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+
     </LinearLayout>
 
 </RelativeLayout>
