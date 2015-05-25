@@ -137,7 +137,6 @@ public class CharacterActivity extends ActionBarActivity implements
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error Fetching Details for " + mResId + ": " + error.getMessage());
                 error.printStackTrace();
-                //TODO Handle TimeoutError etc
             }
         });
 

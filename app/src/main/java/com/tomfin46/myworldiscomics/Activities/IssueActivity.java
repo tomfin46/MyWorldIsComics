@@ -149,7 +149,6 @@ public class IssueActivity extends ActionBarActivity
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error Fetching Details for " + mResId + ": " + error.getMessage());
                 error.printStackTrace();
-                //TODO Handle TimeoutError etc
             }
         });
 

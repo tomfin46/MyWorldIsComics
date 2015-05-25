@@ -45,7 +45,6 @@ public class DescriptionTabbedFragment extends Fragment {
      * @param sections Parameter 1.
      * @return A new instance of fragment DescriptionTabbedFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DescriptionTabbedFragment newInstance(JSONArray sections) {
         DescriptionTabbedFragment fragment = new DescriptionTabbedFragment();
         Bundle args = new Bundle();

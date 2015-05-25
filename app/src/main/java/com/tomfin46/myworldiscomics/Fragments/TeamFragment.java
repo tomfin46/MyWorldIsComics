@@ -30,8 +30,6 @@ import com.tomfin46.myworldiscomics.Service.RequestQueueSingleton;
  * create an instance of this fragment.
  */
 public class TeamFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_RES = "resource";
 
     private OnTeamFragmentInteractionListener mCallback;
@@ -54,7 +52,6 @@ public class TeamFragment extends Fragment {
      * @param resource Parameter 1.
      * @return A new instance of fragment TeamFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TeamFragment newInstance(TeamResource resource) {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();

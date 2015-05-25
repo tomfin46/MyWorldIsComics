@@ -3,4 +3,5 @@
     <string name="realName">Real Name:</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Search for Characters, Teams and more</string>
+    <string name="no_results">No Results Found</string>
 </resources>

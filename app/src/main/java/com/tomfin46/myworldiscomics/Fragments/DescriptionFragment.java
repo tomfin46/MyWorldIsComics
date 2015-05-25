@@ -48,7 +48,6 @@ public class DescriptionFragment extends Fragment {
      * @param section Parameter 1.
      * @return A new instance of fragment DescriptionTabbedFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DescriptionFragment newInstance(String section) {
         DescriptionFragment fragment = new DescriptionFragment();
         Bundle args = new Bundle();

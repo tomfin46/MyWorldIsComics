@@ -45,6 +45,7 @@ public class SearchResultsActivity extends ActionBarActivity
     private SlidingTabLayout mSlidingTab;
     private ProgressBar mProgressBar;
     private LinearLayout mRootLayout;
+    private LinearLayout mNoResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class SearchResultsActivity extends ActionBarActivity
         mPager = (ViewPager) findViewById(R.id.view_pager);
         mSlidingTab = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mNoResults = (LinearLayout) findViewById(R.id.no_results);
 
         handleIntent(getIntent());
     }
@@ -76,30 +78,35 @@ public class SearchResultsActivity extends ActionBarActivity
             BackboneService.Search(this, query, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
-                    mPagerAdapter = new SearchResultsPagerAdapter(getSupportFragmentManager(), processResponse(response));
-                    mPager.setAdapter(mPagerAdapter);
-                    mSlidingTab.setViewPager(mPager);
-                    mSlidingTab.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                        @Override
-                        public int getIndicatorColor(int position) {
-                            return getResources().getColor(R.color.primary_dark);
-                        }
+                    if (response.length() <= 0) {
+                        mProgressBar.setVisibility(View.GONE);
+                        mNoResults.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        mPagerAdapter = new SearchResultsPagerAdapter(getSupportFragmentManager(), processResponse(response));
+                        mPager.setAdapter(mPagerAdapter);
+                        mSlidingTab.setViewPager(mPager);
+                        mSlidingTab.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+                            @Override
+                            public int getIndicatorColor(int position) {
+                                return getResources().getColor(R.color.primary_dark);
+                            }
 
-                        @Override
-                        public int getDividerColor(int position) {
-                            return 0;
-                        }
-                    });
+                            @Override
+                            public int getDividerColor(int position) {
+                                return 0;
+                            }
+                        });
 
-                    mProgressBar.setVisibility(View.GONE);
-                    mRootLayout.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                        mRootLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error Searching for " + query + ": " + error.getMessage());
                     error.printStackTrace();
-                    //TODO Handle TimeoutError etc
                 }
             });
         }

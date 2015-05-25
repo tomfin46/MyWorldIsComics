@@ -28,7 +28,7 @@ public class GenericResourceFragment <T extends BaseResource> extends Fragment {
     private static final String ARG_RES = "resource";
 
     private OnGenericResourceFragmentInteractionListener mCallback;
-    private CharacterFragmentReceiver mReceiver;
+    private GenericResourceFragmentReceiver mReceiver;
 
     private T mResource;
 
@@ -65,7 +65,7 @@ public class GenericResourceFragment <T extends BaseResource> extends Fragment {
             mResource = (T) getArguments().getSerializable(ARG_RES);
         }
 
-        mReceiver = new CharacterFragmentReceiver();
+        mReceiver = new GenericResourceFragmentReceiver();
         getActivity().registerReceiver(mReceiver, new IntentFilter("fragmentupdater"));
     }
 
@@ -143,7 +143,7 @@ public class GenericResourceFragment <T extends BaseResource> extends Fragment {
     public interface OnGenericResourceFragmentInteractionListener {
     }
 
-    public class CharacterFragmentReceiver extends BroadcastReceiver {
+    public class GenericResourceFragmentReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
